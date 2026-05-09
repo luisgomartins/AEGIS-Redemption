@@ -30,7 +30,7 @@ function love.load()
 
     -- Carrega os módulos de estado
     estados.menu = require "src.states.menu"
-    -- estados.play = require "src.states.play" 
+    estados.play = require "src.states.play" 
 
     if estados[EstadoAtual].load then
         estados[EstadoAtual].load()
