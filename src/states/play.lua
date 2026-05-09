@@ -5,10 +5,14 @@ local Play = {}
 local Player = require "src.entities.player"
 -- Importando a entidade de projétil para que o jogador possa atirar
 local Bullet = require "src.entities.bullet"
+-- Importando a entidade do inimigo
+local Enemy = require "src.entities.enemy"
 
 function Play.load()
     -- Inicializa as propriedades do jogador para esta partida
     Player.load()
+    -- Inicializa as propriedades do inimigo para esta partida
+    Enemy.load()
 end
 
 function Play.update(dt)
@@ -16,6 +20,8 @@ function Play.update(dt)
     Player.update(dt)
     -- Atualiza os projéteis ativos
     Bullet.update(dt)
+    -- Atualiza o comportamento do inimigo
+    Enemy.update(dt)
     
     -- Opção de Qualidade de Vida (QoL) para testes: Voltar ao menu
     if love.keyboard.isDown("backspace") then
@@ -30,8 +36,10 @@ function Play.draw()
     -- IMPORTANTE: A ordem de desenho (Z-Index). 
     -- Desenhamos os tiros primeiro, e o jogador depois. 
     -- Assim, visualmente, o tiro sai "de baixo" do tanque.
+    -- O inimigo é desenhado por último para garantir que ele apareça "na frente" do jogador, aumentando a sensação de ameaça.
     Bullet.draw()
     Player.draw()
+    Enemy.draw()
     
     -- HUD Temporário
     love.graphics.setColor(1, 1, 1)
