@@ -24,6 +24,7 @@ function Play.load()
     Player.load()
     -- Inicializa as propriedades do inimigo para esta partida
     Enemy.load()
+
 end
 
 function Play.update(dt)
@@ -54,11 +55,19 @@ function Play.update(dt)
                 -- 1. Reduz o HP do Boss usando o dano do tiro
                 Enemy.hp = Enemy.hp - b.damage
                 
+                -- MATEMÁTICA DE ACÚMULO DE ENERGIA:
+                -- "not" inverte o valor booleano, como os tiros normais têm isSpecial = false, o "not" transforma isso em true e a energia sobe. 
+                -- Como o tiro especial tem isSpecial = true, o not vira false, e o bloco de recarga é ignorado, mantendo a energia zerada após o impacto.
+                if not b.isSpecial then 
+                    Player.energy = math.min(Player.energy + 10, Player.maxEnergy) -- A função math.min garante que o valor nunca ultrapasse Player.maxEnergy.
+                -- Se ele tiver 95 e ganhar 10 (total 105), o math.min força a ficar em 100.
+                end
+
                 -- 2. Destrói o tiro para ele não atravessar o Boss
                 table.remove(bullets, i)
                 
                 -- 3. Log de debug no console para acompanharmos o dano
-                print("IMPACTO! Boss HP: " .. Enemy.hp)
+                print("Boss HP: " .. Enemy.hp .. " | Kael Energy: " .. Player.energy) -- Isso nos ajuda a verificar se o sistema de energia está funcionando corretamente, e se o dano está sendo aplicado ao boss.
             end
         end
     end
@@ -121,5 +130,10 @@ function Play.draw()
 
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("Fase 1: Ruínas de Neo-Cidade", 5, 5)
+
+    -- Exibe a energia do Jogador (Kael) na interface
+    love.graphics.setColor(1, 1, 0) -- Amarelo
+    love.graphics.print("Kael Energy: " .. Player.energy .. "/" .. Player.maxEnergy, 190, 160)
+
 end
 return Play

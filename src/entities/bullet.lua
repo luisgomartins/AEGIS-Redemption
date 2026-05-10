@@ -12,9 +12,24 @@ function Bullet.spawn(x, y)
         width = 4,
         height = 10,
         speed = 400, -- Mais rápido que o jogador, pois é um projétil
-        damage = 10  -- Dano base definido no GDD
+        damage = 10,  -- Dano base definido no GDD
+        isSpecial = false -- Flag para diferenciar
     }
     table.insert(activeBullets, newBullet)
+end
+
+-- NOVA FUNÇÃO: Fábrica do Tiro Especial
+function Bullet.spawnSpecial(x, y) -- Esta função pode ser chamada para criar um tiro mais poderoso, por exemplo, quando o jogador ativa um poder especial
+    local specialBullet = { -- Propriedades do tiro especial, ajustadas para ser mais impactante visualmente e em termos de gameplay
+        x = x, -- A posição inicial do tiro, geralmente a posição do jogador que atira
+        y = y, -- O tiro começa na mesma altura do jogador, mas pode ser ajustado para sair de uma "boca de canhão" específica
+        width = 16,  -- Tiro muito mais largo
+        height = 32, -- Tiro mais comprido
+        speed = 50, -- Muito mais lento que o tiro normal, para dar um efeito de "poder carregado" e permitir que o jogador posicione melhor
+        damage = 100, -- 10x o dano de um tiro normal (Poder Destrutivo!)
+        isSpecial = true -- Flag ativada
+    }
+    table.insert(activeBullets, specialBullet)
 end
 
 function Bullet.update(dt)
@@ -36,9 +51,16 @@ function Bullet.update(dt)
 end
 
 function Bullet.draw()
-    -- Verde claro temporário para o laser do tanque
-    love.graphics.setColor(0.5, 1, 0.5) 
+    
     for _, b in ipairs(activeBullets) do
+        -- Diferencia a cor baseada na flag do projétil
+        if b.isSpecial then
+            -- Azul/Ciano brilhante para o Especial
+            love.graphics.setColor(0, 1, 1) 
+        else
+            -- Verde para o tiro comum
+            love.graphics.setColor(0.5, 1, 0.5) 
+        end
         love.graphics.rectangle("fill", b.x, b.y, b.width, b.height)
     end
 end

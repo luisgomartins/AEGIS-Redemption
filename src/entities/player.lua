@@ -24,6 +24,10 @@ function Player.load()
     Player.energy = 0
     Player.form = "tank" -- Fase 1
 
+    -- SISTEMA DE ENERGIA (GDD)
+    Player.energy = 0 -- Energia inicial do jogador
+    Player.maxEnergy = 100 -- Limite máximo da barra
+
     -- Variáveis para controle de tiro
     Player.shootTimer = 0
     Player.shootCooldown = 0.15 -- Tempo em segundos entre cada tiro (150ms)
@@ -59,10 +63,22 @@ function Player.update(dt)
         -- Calcula o centro do tanque para o tiro sair alinhado
         local bulletX = Player.x + (Player.width / 2) - 2 -- 2 é a metade da largura do tiro
         local bulletY = Player.y
-        
         -- Instancia o tiro e reseta o cronômetro
         Bullet.spawn(bulletX, bulletY)
         Player.shootTimer = Player.shootCooldown
+
+    end
+    -- TIRO ESPECIAL (Tecla F)
+    -- Condição: A tecla F deve ser pressionada E a energia tem que estar no máximo
+    if love.keyboard.isDown("f") and Player.energy >= Player.maxEnergy then -- 
+        local specialX = Player.x + (Player.width / 2) - 8 -- Centraliza o tiro de 16px
+        
+        -- Dispara o Especial
+        Bullet.spawnSpecial(specialX, Player.y)
+        
+        -- Reseta a energia (Esgotamento de Foco)
+        Player.energy = 0
+        print("PODER ESPECIAL LANÇADO!")
     end
 end
 
