@@ -1,6 +1,8 @@
 -- src/entities/enemy.lua
 local Enemy = {}
 
+local EnemyBullet = require "src.entities.enemy_bullet" -- Importando o módulo de tiros inimigos para que o Boss possa atirar
+
 local VIRTUAL_WIDTH = 320 
 
 function Enemy.load()
@@ -18,9 +20,8 @@ function Enemy.load()
     -- Vetor de direção: 1 para Direita, -1 para Esquerda
     Enemy.direction = 1 
     
-    -- Preparando o terreno para os tiros do boss no próximo passo
     Enemy.shootTimer = 0
-    Enemy.shootCooldown = 0.8
+    Enemy.shootCooldown = 0.8 -- O Boss atira a cada 0.8 segundos, um pouco mais lento que o jogador para dar tempo de reação
 end
 
 function Enemy.update(dt)
@@ -37,6 +38,18 @@ function Enemy.update(dt)
         Enemy.x = VIRTUAL_WIDTH - Enemy.width
         Enemy.direction = -1 -- Bateu na direita, vai para a esquerda
     end
+
+    -- Lógica de Disparo do Boss
+    Enemy.shootTimer = Enemy.shootTimer - dt -- Decrementa o timer a cada frame
+    if Enemy.shootTimer <= 0 then -- Se o timer zerar ou for negativo, é hora de atirar
+        -- Calcula o centro inferior do Boss para instanciar o tiro
+        local spawnX = Enemy.x + (Enemy.width / 2) - 3 -- 3 é metade da largura do tiro inimigo
+        local spawnY = Enemy.y + Enemy.height -- O tiro começa na base do Boss
+        
+        EnemyBullet.spawn(spawnX, spawnY) -- Chama a função de spawn do tiro inimigo, passando as coordenadas calculadas
+        Enemy.shootTimer = Enemy.shootCooldown -- Reseta o timer
+    end
+
 end
 
 function Enemy.draw()

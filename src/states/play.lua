@@ -7,6 +7,8 @@ local Player = require "src.entities.player"
 local Bullet = require "src.entities.bullet"
 -- Importando a entidade do inimigo
 local Enemy = require "src.entities.enemy"
+-- Importando a entidade de projétil inimigo para que o Boss possa atirar
+local EnemyBullet = require "src.entities.enemy_bullet"
 
 -- Função matemática pura para detecção AABB
 -- Recebe Posição X, Y e Dimensões (Largura, Altura) de dois objetos
@@ -30,6 +32,8 @@ function Play.update(dt)
     -- Atualiza os projéteis ativos
     Bullet.update(dt)
     -- Só atualizamos o boss e checamos colisões se ele ainda estiver vivo
+    EnemyBullet.update(dt) -- Atualiza os tiros inimigos
+
     if Enemy.hp > 0 then
         -- Atualiza a posição do inimigo (Eco 1)
         Enemy.update(dt)
@@ -40,7 +44,6 @@ function Play.update(dt)
         -- IMPORTANTE: A função Bullet.getAll() retorna a tabela de tiros ativos, permitindo que o estado Play acesse e verifique cada tiro contra o inimigo.
         -- A ordem de verificação é crucial: primeiro verificamos se o inimigo ainda tem HP, para evitar checar colisões desnecessárias após a morte do boss, o que otimiza o desempenho.
         local bullets = Bullet.getAll()
-        
         -- Iteramos de trás para frente, pois vamos deletar itens da tabela!
         for i = #bullets, 1, -1 do
             local b = bullets[i]
@@ -59,6 +62,26 @@ function Play.update(dt)
             end
         end
     end
+
+    -- Nova Colisão: Tiros do Inimigo vs Jogador (Kael)
+    local eBullets = EnemyBullet.getAll() -- Pegamos os tiros inimigos ativos para verificar colisões com o jogador
+    for i = #eBullets, 1, -1 do -- Iteramos de trás para frente para poder remover tiros sem pular índices
+        local eb = eBullets[i] -- Referência ao tiro inimigo atual
+        
+        if CheckCollision(eb.x, eb.y, eb.width, eb.height, Player.x, Player.y, Player.width, Player.height) then -- Se houve colisão entre o tiro inimigo e o jogador
+            Player.hp = Player.hp - eb.damage -- Reduz o HP do jogador pelo dano do tiro inimigo
+            table.remove(eBullets, i) -- Remove o tiro inimigo para evitar múltiplos impactos
+            print("KAEL ATINGIDO! HP: " .. Player.hp) -- Log de debug para acompanhar o HP do jogador após ser atingido
+            
+            -- Condição de Derrota (Game Over temporário)
+            if Player.hp <= 0 then -- O jogador morreu
+                print("GAME OVER - Tanque Destruído") -- Log de debug para indicar que o jogo acabou
+                MudarEstado("menu") -- Volta pro menu se morrer
+            end
+        end
+    end
+
+
     
     -- Opção de Qualidade de Vida (QoL) para testes: Voltar ao menu
     if love.keyboard.isDown("backspace") then
@@ -75,6 +98,7 @@ function Play.draw()
     -- Assim, visualmente, o tiro sai "de baixo" do tanque.
     -- O inimigo é desenhado por último para garantir que ele apareça "na frente" do jogador, aumentando a sensação de ameaça.
     Bullet.draw()
+    EnemyBullet.draw() -- Desenha os tiros inimigos
     Player.draw()
     -- Só renderizamos o inimigo e a barra de HP se ele estiver vivo
     -- Isso evita confusão visual e melhora a performance, já que não precisamos desenhar o boss ou a barra de vida após sua derrota.
@@ -91,8 +115,11 @@ function Play.draw()
     end
     
     -- HUD Temporário
+    -- Exibe a vida do Jogador (Kael) na interface
+    love.graphics.setColor(0.2, 0.8, 1)
+    love.graphics.print("Kael HP: " .. Player.hp, 5, 160)
+
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("Fase 1: Ruínas de Neo-Cidade", 5, 5)
 end
-
 return Play
