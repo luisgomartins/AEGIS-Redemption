@@ -9,6 +9,8 @@ local Bullet = require "src.entities.bullet"
 local Enemy = require "src.entities.enemy"
 -- Importando a entidade de projétil inimigo para que o Boss possa atirar
 local EnemyBullet = require "src.entities.enemy_bullet"
+-- Importando o módulo de HUD para exibir as barras de vida, energia e contador de moedas
+local Hud = require "src.ui.hud"
 
 -- Função matemática pura para detecção AABB
 -- Recebe Posição X, Y e Dimensões (Largura, Altura) de dois objetos
@@ -113,27 +115,12 @@ function Play.draw()
     -- Isso evita confusão visual e melhora a performance, já que não precisamos desenhar o boss ou a barra de vida após sua derrota.
     if Enemy.hp > 0 then
         Enemy.draw()
-        
-        -- Feedback visual do HP do Boss no topo direito da tela
-        love.graphics.setColor(1, 0.2, 0.2)
-        love.graphics.print("Eco 1 HP: " .. Enemy.hp, 230, 5)
     else
         -- Condição de Vitória (Temporária)
         love.graphics.setColor(0.2, 1, 0.2)
         love.graphics.printf("ECO 1 DESTRUIDO!", 0, 80, 320, "center")
     end
-    
-    -- HUD Temporário
-    -- Exibe a vida do Jogador (Kael) na interface
-    love.graphics.setColor(0.2, 0.8, 1)
-    love.graphics.print("Kael HP: " .. Player.hp, 5, 160)
-
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.print("Fase 1: Ruínas de Neo-Cidade", 5, 5)
-
-    -- Exibe a energia do Jogador (Kael) na interface
-    love.graphics.setColor(1, 1, 0) -- Amarelo
-    love.graphics.print("Kael Energy: " .. Player.energy .. "/" .. Player.maxEnergy, 190, 160)
+    Hud.draw(Player, Enemy) -- Chama a função de desenho do HUD, passando o jogador e o inimigo para acessar seus atributos e renderizar as barras de vida, energia e contador de moedas
 
 end
 return Play

@@ -15,7 +15,8 @@ function Enemy.load()
     Enemy.y = 10 
     
     Enemy.speed = 50 -- Movimentação mais pesada/lenta que a do Kael
-    Enemy.hp = 1000  -- Boss precisa de uma barra de vida robusta
+    Enemy.maxHp = 1000 -- Valor máximo de HP para referência em cura e UI
+    Enemy.hp = Enemy.maxHp -- Inicializa o HP do inimigo com o valor máximo
     
     -- Vetor de direção: 1 para Direita, -1 para Esquerda
     Enemy.direction = 1 

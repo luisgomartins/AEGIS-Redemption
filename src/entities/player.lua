@@ -20,7 +20,10 @@ function Player.load()
     
     -- Atributos baseados no GDD
     Player.speed = 120 -- Pixels por segundo
-    Player.hp = 100
+    Player.maxHp = 100 -- Valor máximo de HP para referência em cura e UI
+    Player.hp = Player.maxHp -- Inicializa o HP do jogador com o valor máximo
+    Player.coins = 0   -- Variável para a loja pós-chefe
+    
     Player.energy = 0
     Player.form = "tank" -- Fase 1
 
