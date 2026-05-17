@@ -11,7 +11,7 @@ function EnemyBullet.spawn(x, y, dx, dy)
         width = 6, 
         height = 6,
         speed = 150, 
-        damage = 0,
+        damage = 20,
         -- Se dx/dy não forem informados, o tiro desce reto (0 no X, 1 no Y)
         dx = dx or 0,
         dy = dy or 1
