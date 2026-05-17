@@ -73,6 +73,13 @@ function Play.update(dt)
             end
         end
     end
+    if Enemy.hp <= 0 then
+        -- Opcional: Adiciona moedas como recompensa pela vitória
+        Player.coins = Player.coins + 150 
+        print("VITORIA! Entrando no Hangar...")
+        MudarEstado("shop")
+    end
+
 
     -- Nova Colisão: Tiros do Inimigo vs Jogador (Kael)
     local eBullets = EnemyBullet.getAll() -- Pegamos os tiros inimigos ativos para verificar colisões com o jogador
