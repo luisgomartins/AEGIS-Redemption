@@ -32,7 +32,7 @@ function Play.load()
         -- Apenas transformamos a máquina Dual-Form:
         Player.form = "nave"
         Player.width = 16
-        Player.height = 24
+        Player.height = 16
         Player.x = (320 / 2) - (Player.width / 2)
         Player.y = 180 - Player.height - 10
     end

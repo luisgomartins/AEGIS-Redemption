@@ -12,7 +12,7 @@ function Bullet.spawn(x, y)
         width = 4,
         height = 10,
         speed = 400, -- Mais rápido que o jogador, pois é um projétil
-        damage = 1000,  -- Dano base definido no GDD
+        damage = 500,  -- Dano base definido no GDD
         isSpecial = false -- Flag para diferenciar
     }
     table.insert(activeBullets, newBullet)

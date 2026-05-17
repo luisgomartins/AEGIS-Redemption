@@ -42,6 +42,7 @@ function Player.update(dt)
         if love.keyboard.isDown("s") then Player.y = Player.y + Player.speed * dt end
     end
     -- 2. Clamping (Restrição de Limites da Tela)
+    
     -- Garante que o tanque não saia da área visível (0 a 320 pixels)
     if Player.x < 0 then
         Player.x = 0

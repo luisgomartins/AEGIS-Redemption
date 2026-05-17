@@ -59,7 +59,7 @@ function Shop.update(dt)
     end
 
     -- Confirmação de Compra (Barra de Espaço)
-    if love.keyboard.isDown("space") then
+    if love.keyboard.isDown("b") then
         local item = items[selectedIndex]
         
         if Player.coins >= item.cost then
