@@ -6,33 +6,23 @@ local Player = {}
 local Bullet = require "src.entities.bullet"
 
 -- Constante local para a largura da tela baseada na sua configuração
-local VIRTUAL_WIDTH = 320 
+local VIRTUAL_WIDTH = 320
+local VIRTUAL_HEIGHT = 180 
 
 function Player.load()
-    -- Dimensões temporárias (Hitbox) até termos o sprite final do tanque
+
     Player.width = 24
     Player.height = 16
-    
-    -- Posicionamento inicial: Centro da tela no eixo X, base da tela no eixo Y
-    -- Subtraímos a altura do jogador e uma margem de segurança (10px) do fundo
     Player.x = (VIRTUAL_WIDTH / 2) - (Player.width / 2)
-    Player.y = 180 - Player.height - 10 
-    
-    -- Atributos baseados no GDD
+    Player.y = VIRTUAL_HEIGHT - Player.height - 10 
     Player.speed = 120 -- Pixels por segundo
     Player.maxHp = 100 -- Valor máximo de HP para referência em cura e UI
     Player.hp = Player.maxHp -- Inicializa o HP do jogador com o valor máximo
     Player.coins = 0   -- Variável para a loja pós-chefe
-    
-    Player.energy = 0
     Player.form = "tank" -- Fase 1
-
-    -- SISTEMA DE ENERGIA (GDD)
     Player.energy = 0 -- Energia inicial do jogador
     Player.maxEnergy = 100 -- Limite máximo da barra
-
-    -- Variáveis para controle de tiro
-    Player.shootTimer = 0
+    Player.shootTimer = 0 -- Timer para controle de tiro
     Player.shootCooldown = 0.15 -- Tempo em segundos entre cada tiro (150ms)
 end
 
@@ -43,11 +33,14 @@ function Player.update(dt)
     if love.keyboard.isDown("a") then
         Player.x = Player.x - Player.speed * dt
     end
-    
     if love.keyboard.isDown("d") then
         Player.x = Player.x + Player.speed * dt
     end
-
+    -- Movimentação Vertical (Fase 2: Nave)
+    if Player.form == "nave" then
+        if love.keyboard.isDown("w") then Player.y = Player.y - Player.speed * dt end
+        if love.keyboard.isDown("s") then Player.y = Player.y + Player.speed * dt end
+    end
     -- 2. Clamping (Restrição de Limites da Tela)
     -- Garante que o tanque não saia da área visível (0 a 320 pixels)
     if Player.x < 0 then
@@ -55,6 +48,16 @@ function Player.update(dt)
     elseif Player.x + Player.width > VIRTUAL_WIDTH then
         Player.x = VIRTUAL_WIDTH - Player.width
     end
+    
+    -- Clamping Eixo Y (Restrição de borda superior/inferior)
+    if Player.form == "nave" then
+        if Player.y < 0 then 
+            Player.y = 0
+        elseif Player.y + Player.height > VIRTUAL_HEIGHT then 
+            Player.y = VIRTUAL_HEIGHT - Player.height 
+        end
+    end
+
     -- 3. Controle de Tiro (Cooldown)
     -- Reduz o timer de tiro se ele estiver ativo
     if Player.shootTimer > 0 then

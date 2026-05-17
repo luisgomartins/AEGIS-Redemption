@@ -1,16 +1,13 @@
 -- src/states/play.lua
 local Play = {}
 
--- Importando a entidade do jogador
 local Player = require "src.entities.player"
--- Importando a entidade de projétil para que o jogador possa atirar
 local Bullet = require "src.entities.bullet"
--- Importando a entidade do inimigo
 local Enemy = require "src.entities.enemy"
--- Importando a entidade de projétil inimigo para que o Boss possa atirar
 local EnemyBullet = require "src.entities.enemy_bullet"
--- Importando o módulo de HUD para exibir as barras de vida, energia e contador de moedas
 local Hud = require "src.ui.hud"
+
+Play.faseAtual = 1 -- Variável para controlar a fase atual (1: Tanque, 2: Nave)
 
 -- Função matemática pura para detecção AABB
 -- Recebe Posição X, Y e Dimensões (Largura, Altura) de dois objetos
@@ -22,11 +19,30 @@ local function CheckCollision(x1, y1, w1, h1, x2, y2, w2, h2)
 end
 
 function Play.load()
-    -- Inicializa as propriedades do jogador para esta partida
-    Player.load()
-    -- Inicializa as propriedades do inimigo para esta partida
-    Enemy.load()
+    -- ==========================================
+    -- 1. CONFIGURAÇÃO DO JOGADOR (KAEL)
+    -- ==========================================
+    if Play.faseAtual == 1 then
+        -- Fase 1 (Novo Jogo): Carrega o Kael do zero (Tanque, HP base, 0 moedas)
+        Player.load() 
+    elseif Play.faseAtual == 2 then
+        -- Fase 2 (Órbita Cega): Kael vem da Loja. 
+        -- NÃO chamamos Player.load() para preservar as compras e o HP atual!
+        
+        -- Apenas transformamos a máquina Dual-Form:
+        Player.form = "nave"
+        Player.width = 16
+        Player.height = 24
+        Player.x = (320 / 2) - (Player.width / 2)
+        Player.y = 180 - Player.height - 10
+    end
 
+    -- ==========================================
+    -- 2. CONFIGURAÇÃO DO INIMIGO (ECOS)
+    -- ==========================================
+    -- Como é um novo chefe, sempre recarregamos, injetando o número da fase
+    -- para que o script saiba quais atributos (HP, Velocidade) aplicar.
+    Enemy.load(Play.faseAtual)
 end
 
 function Play.update(dt)
@@ -128,6 +144,8 @@ function Play.draw()
         love.graphics.printf("ECO 1 DESTRUIDO!", 0, 80, 320, "center")
     end
     Hud.draw(Player, Enemy) -- Chama a função de desenho do HUD, passando o jogador e o inimigo para acessar seus atributos e renderizar as barras de vida, energia e contador de moedas
+
+    love.graphics.setColor(1, 1, 1)
 
 end
 return Play

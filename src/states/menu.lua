@@ -1,5 +1,6 @@
 -- src/states/menu.lua
 local Menu = {}
+local Play = require "src.states.play" -- Importando o estado de jogo para permitir a transição quando o jogador pressionar Enter
 
 function Menu.load()
     -- Preparação de assets locais do menu (fontes, logos, músicas)
@@ -8,6 +9,7 @@ end
 function Menu.update(dt)
     -- Transição de estado: de Menu para Play
     if love.keyboard.isDown("return") then
+        Play.faseAtual = 1 -- Reinicia a fase ao entrar no jogo
         MudarEstado("play")
     end
 end

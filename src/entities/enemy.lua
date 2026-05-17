@@ -5,24 +5,36 @@ local EnemyBullet = require "src.entities.enemy_bullet" -- Importando o módulo 
 
 local VIRTUAL_WIDTH = 320 
 
-function Enemy.load()
-    -- Proporções colossais em relação ao jogador (24x16)
-    Enemy.width = 64 
-    Enemy.height = 32
-    
+function Enemy.load(fase)
+    if fase == 1 then
+        Enemy.width = 64 
+        Enemy.height = 32
     -- Centralizado no eixo X, posicionado no topo da tela (margem de 10px)
-    Enemy.x = (VIRTUAL_WIDTH / 2) - (Enemy.width / 2)
-    Enemy.y = 10 
-    
-    Enemy.speed = 50 -- Movimentação mais pesada/lenta que a do Kael
-    Enemy.maxHp = 1000 -- Valor máximo de HP para referência em cura e UI
-    Enemy.hp = Enemy.maxHp -- Inicializa o HP do inimigo com o valor máximo
-    
+        Enemy.x = (VIRTUAL_WIDTH / 2) - (Enemy.width / 2)
+        Enemy.y = 10 
+        Enemy.speed = 50 -- Movimentação mais pesada/lenta que a do Kael
+        Enemy.maxHp = 1000 -- Valor máximo de HP para referência em cura e UI
+        Enemy.hp = Enemy.maxHp -- Inicializa o HP do inimigo com o valor máximo
     -- Vetor de direção: 1 para Direita, -1 para Esquerda
-    Enemy.direction = 1 
+        Enemy.direction = 1 
+        Enemy.shootTimer = 0
+        Enemy.shootCooldown = 0.8 -- O Boss atira a cada 0.8 segundos, um pouco mais lento que o jogador para dar tempo de reação
     
-    Enemy.shootTimer = 0
-    Enemy.shootCooldown = 0.8 -- O Boss atira a cada 0.8 segundos, um pouco mais lento que o jogador para dar tempo de reação
+    elseif fase == 2 then
+        -- Configurações para o Eco 2 (Fase 2: Nave)
+        Enemy.width = 64 
+        Enemy.height = 32
+        -- Centralizado no eixo X, posicionado no topo da tela (margem de 10px)
+        Enemy.x = (VIRTUAL_WIDTH / 2) - (Enemy.width / 2)
+        Enemy.y = 10 
+        Enemy.speed = 80 -- Movimentação mais pesada/lenta que a do Kael
+        Enemy.maxHp = 2000 -- Valor máximo de HP para referência em cura e UI
+        Enemy.hp = Enemy.maxHp -- Inicializa o HP do inimigo com o valor máximo
+        -- Vetor de direção: 1 para Direita, -1 para Esquerda
+        Enemy.direction = 1 
+        Enemy.shootTimer = 0
+        Enemy.shootCooldown = 0.5  -- O Eco 2 atira mais rápido que o Eco 1 para aumentar a dificuldade
+    end   
 end
 
 function Enemy.update(dt)

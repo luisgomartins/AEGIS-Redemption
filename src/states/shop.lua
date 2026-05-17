@@ -1,5 +1,6 @@
 local Shop = {}
 local Player = require "src.entities.player"
+local Play = require "src.states.play" -- Importa o estado de jogo para acessar a fase atual e as propriedades do jogador
 
 -- Variáveis de controle da interface
 local items = {}
@@ -73,10 +74,13 @@ function Shop.update(dt)
 
     -- Prosseguir para a próxima etapa da história (Enter)
     if love.keyboard.isDown("return") then
-        -- Quando a Fase 2 existir, usaremos MudarEstado("play") novamente, 
-        -- mas com um roteamento para trocar a forma do player para "Nave"
-        print("Preparando transicao para a Orbita Cega...")
+        print("Sistemas aeroespaciais ativados. Ascendendo a Orbita Cega")
+        -- Incrementa a fase antes de rotear
+        Play.faseAtual = Play.faseAtual + 1
+        
+        -- Atraso de input e roteamento
         inputCooldown = 0.5
+        MudarEstado("play")
     end
 end
 
