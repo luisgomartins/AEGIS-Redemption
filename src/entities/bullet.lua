@@ -70,4 +70,8 @@ function Bullet.getAll()
     return activeBullets
 end
 
+function Bullet.clear()
+    activeBullets = {}
+end
+
 return Bullet

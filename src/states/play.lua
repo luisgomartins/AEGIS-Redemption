@@ -34,8 +34,12 @@ function Play.load()
         Player.y = 180 - Player.height - 10
     end
 
+    Player.hp = Player.maxHp -- Garante que o HP do jogador esteja cheio ao iniciar cada fase
+    Player.energy = 0 -- Reseta a energia para cada fase, incentivando o uso estratégico dos tiros especiais
     Enemy.load(Play.faseAtual)
-    Coin.clear() 
+    Coin.clear()
+    Bullet.clear()
+    EnemyBullet.clear()
     ambientDropTimer = 0 -- Inicializa o timer de drops
 end
 
