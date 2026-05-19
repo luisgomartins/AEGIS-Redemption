@@ -135,11 +135,22 @@ function Play.update(dt)
         end
     end
 
+    -- ==========================================================
+    -- ATALHOS DE DEBUG (REMOVER ANTES DO BUILD FINAL)
+    -- ==========================================================
+    --[[]
+    if love.keyboard.isDown("1") then
+        Play.faseAtual = 1
+        Play.load() -- Recarrega as configurações da Fase 1 instantaneamente
+    elseif love.keyboard.isDown("2") then
+        Play.faseAtual = 2
+        Play.load() -- Transiciona e recarrega os dados para a Fase 2
+    end
+    --]]
     if love.keyboard.isDown("backspace") then
         MudarEstado("menu")
     end
 end
-
 function Play.draw()
     love.graphics.clear(0.15, 0.15, 0.18) 
 
