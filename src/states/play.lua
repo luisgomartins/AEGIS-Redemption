@@ -98,7 +98,7 @@ function Play.update(dt)
         if Play.faseAtual == 3 then
             print("VITÓRIA FINAL! O Silêncio foi quebrado.")
             -- Reinicia para o menu após zerar (você pode criar uma tela de créditos no futuro)
-            MudarEstado("menu")
+            MudarEstado("victory")
         else
             print("VITORIA! Entrando no Hangar...")
             MudarEstado("shop")
@@ -116,7 +116,7 @@ function Play.update(dt)
             
             if Player.hp <= 0 then
                 print("GAME OVER - Destruído")
-                MudarEstado("menu")
+                MudarEstado("gameover")
             end
         end
     end

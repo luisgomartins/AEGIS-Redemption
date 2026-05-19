@@ -32,6 +32,8 @@ function love.load()
     estados.menu = require "src.states.menu"
     estados.play = require "src.states.play" 
     estados.shop = require "src.states.shop"
+    estados.gameover = require "src.states.gameover"
+    estados.victory = require "src.states.victory"
 
     if estados[EstadoAtual].load then
         estados[EstadoAtual].load()
@@ -66,5 +68,11 @@ end
 function love.keypressed(key)
     if key == "escape" then
         love.event.quit()
+    end
+end
+
+function love.keypressed(key)
+    if estados[EstadoAtual] and estados[EstadoAtual].keypressed then
+        estados[EstadoAtual].keypressed(key)
     end
 end

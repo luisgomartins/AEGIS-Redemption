@@ -9,8 +9,10 @@ end
 
 function Menu.update(dt)
     -- Transição de estado: de Menu para Play
-    if love.keyboard.isDown("return") then
-        Play.faseAtual = 1 -- Reinicia a fase ao entrar no jogo
+end
+
+function Menu.keypressed(key)
+    if key == "return" then
         MudarEstado("play")
     end
 end
