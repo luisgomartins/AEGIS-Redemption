@@ -1,4 +1,5 @@
 -- src/states/menu.lua
+
 local Menu = {}
 local Play = require "src.states.play" -- Importando o estado de jogo para permitir a transição quando o jogador pressionar Enter
 

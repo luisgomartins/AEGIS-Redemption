@@ -1,3 +1,5 @@
+-- src/entities/enemy_bullet.lua
+
 local EnemyBullet = {}
 local activeBullets = {}
 local VIRTUAL_HEIGHT = 180

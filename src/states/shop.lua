@@ -1,3 +1,5 @@
+-- src/states/shop.lua
+
 local Shop = {}
 local Player = require "src.entities.player"
 local Play = require "src.states.play" -- Importa o estado de jogo para acessar a fase atual e as propriedades do jogador

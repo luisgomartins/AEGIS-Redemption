@@ -1,4 +1,5 @@
 -- conf.lua
+
 function love.conf(t)
     t.identity = "aegis_redemption"
     t.window.title = "AEGIS: Redemption"

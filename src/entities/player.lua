@@ -1,4 +1,5 @@
 -- src/entities/player.lua
+
 -- Este módulo define a entidade do jogador, incluindo suas propriedades, comportamentos de movimentação e renderização. Ele é projetado para ser
 -- simples e modular, permitindo fácil expansão no futuro com sprites, animações e mecânicas adicionais.
 local Player = {}

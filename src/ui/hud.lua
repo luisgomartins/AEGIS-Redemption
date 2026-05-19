@@ -1,3 +1,5 @@
+-- src/ui/hud.lua
+
 local Hud = {} -- Módulo para a interface de usuário (HUD)
 
 local BAR_WIDTH = 50 -- Largura total da barra de vida/energia

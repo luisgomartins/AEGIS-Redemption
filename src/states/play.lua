@@ -1,4 +1,5 @@
 -- src/states/play.lua
+
 local Play = {}
 
 local Player = require "src.entities.player"

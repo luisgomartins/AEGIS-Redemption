@@ -1,4 +1,5 @@
 -- src/entities/enemy.lua
+
 local Enemy = {}
 local EnemyBullet = require "src.entities.enemy_bullet" 
 local Player = require "src.entities.player"
