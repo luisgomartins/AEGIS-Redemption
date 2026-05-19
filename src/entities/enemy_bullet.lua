@@ -6,15 +6,14 @@ local VIRTUAL_HEIGHT = 180
 local VIRTUAL_WIDTH = 320 -- Adicionado para checagem lateral
 
 -- Agora recebemos dx e dy como parâmetros opcionais
-function EnemyBullet.spawn(x, y, dx, dy)
+function EnemyBullet.spawn(x, y, dx, dy, customDamage, customSpeed)
     local newBullet = {
         x = x, 
         y = y,
         width = 6, 
         height = 6,
-        speed = 150, 
-        damage = 20,
-        -- Se dx/dy não forem informados, o tiro desce reto (0 no X, 1 no Y)
+        speed = customSpeed or 150, -- Usa a velocidade customizada ou o padrão 150
+        damage = 0, -- Usa o dano customizado ou o padrão 20
         dx = dx or 0,
         dy = dy or 1
     }

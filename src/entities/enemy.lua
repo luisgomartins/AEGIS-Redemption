@@ -56,7 +56,25 @@ function Enemy.load(fase)
         Enemy.targetY = 0
         Enemy.laserDirection = 1 -- 1 atira pra direita, -1 atira pra esquerda
         Enemy.laserActiveTimer = 0   
-        Enemy.laserSpawnTick = 0     
+        Enemy.laserSpawnTick = 0
+        
+    elseif fase == 3 then
+        -- Configurações do Eco 3: O Núcleo de Comando
+        Enemy.width = 64 
+        Enemy.height = 64
+        Enemy.x = (VIRTUAL_WIDTH / 2) - (Enemy.width / 2)
+        Enemy.y = 15 
+        Enemy.maxHp = 4500 -- Máximo de resistência (GDD)
+        Enemy.hp = Enemy.maxHp 
+        
+        -- Variáveis da Curva de Lissajous (Movimentação)
+        Enemy.moveTime = 0
+        
+        -- Controle de Padrões de Tiro
+        Enemy.attackTimer = 0
+        Enemy.patternIndex = 1
+        Enemy.spiralAngle = 0
+        Enemy.shootTimer = 0
     end   
 end
 
@@ -228,6 +246,53 @@ function Enemy.update(dt)
                 Enemy.horizontalCooldown = 14 -- Reseta o timer pro próximo rasante
             end
         end
+
+    elseif Enemy.faseAtual == 3 then
+        -- ==========================================
+        -- IA FASE 3: Curva de Lissajous e Bullet Hell Extremo
+        -- ==========================================
+        
+        -- 1. Movimentação (Curva do Infinito)
+        Enemy.moveTime = Enemy.moveTime + dt
+        Enemy.x = (VIRTUAL_WIDTH / 2) - (Enemy.width / 2) + math.sin(Enemy.moveTime) * 110
+        Enemy.y = 15 + math.sin(Enemy.moveTime * 2) * 10
+        
+        -- 2. Transição de Padrões (Muda a cada 5 segundos)
+        Enemy.attackTimer = Enemy.attackTimer + dt
+        if Enemy.attackTimer >= 5 then
+            Enemy.attackTimer = 0
+            Enemy.patternIndex = Enemy.patternIndex == 1 and 2 or 1
+        end
+        
+        local cx = Enemy.x + (Enemy.width / 2)
+        local cy = Enemy.y + (Enemy.height / 2)
+        
+        -- 3. Disparo de Padrões
+        Enemy.shootTimer = Enemy.shootTimer - dt
+        if Enemy.shootTimer <= 0 then
+            
+            if Enemy.patternIndex == 1 then
+                -- PADRÃO 1: Vórtice de Vácuo (Espiral Dupla de alto dano)
+                Enemy.shootCooldown = 0.04 -- Muito rápido
+                Enemy.spiralAngle = Enemy.spiralAngle + 0.3
+                
+                -- Note o envio de 40 de dano e 180 de velocidade (supera os valores padrões)
+                -- Espiral Horária
+                EnemyBullet.spawn(cx, cy, math.cos(Enemy.spiralAngle) * 1.5, math.sin(Enemy.spiralAngle) * 1.5, 40, 180)
+                -- Espiral Anti-horária
+                EnemyBullet.spawn(cx, cy, math.cos(-Enemy.spiralAngle) * 1.5, math.sin(-Enemy.spiralAngle) * 1.5, 40, 180)
+                
+            elseif Enemy.patternIndex == 2 then
+                -- PADRÃO 2: Matriz de Aniquilação (Explosão Radial Densa)
+                Enemy.shootCooldown = 1.2
+                for i = 1, 24 do -- 24 tiros simultâneos criando um anel
+                    local angulo = (i / 24) * (math.pi * 2)
+                    EnemyBullet.spawn(cx, cy, math.cos(angulo) * 1.8, math.sin(angulo) * 1.8, 30, 140)
+                end
+            end
+            
+            Enemy.shootTimer = Enemy.shootCooldown
+        end
     end
 end
 
@@ -252,6 +317,14 @@ function Enemy.draw()
             love.graphics.setColor(0, 1, 1) -- Fica Ciano brilhante enquanto joga o raio de lado
         else
             love.graphics.setColor(0.8, 0.1, 0.8) -- Roxo normal
+        end
+        love.graphics.rectangle("fill", Enemy.x, Enemy.y, Enemy.width, Enemy.height)
+    elseif Enemy.faseAtual == 3 then
+        -- O Núcleo pulsa mudando de cor dependendo do padrão de tiro
+        if Enemy.patternIndex == 1 then
+            love.graphics.setColor(1, 0, 0.2) -- Carmesim/Rosa Escuro (Vórtice)
+        else
+            love.graphics.setColor(1, 0.5, 0) -- Laranja Intenso (Matriz)
         end
         love.graphics.rectangle("fill", Enemy.x, Enemy.y, Enemy.width, Enemy.height)
     end

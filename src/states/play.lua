@@ -26,7 +26,7 @@ end
 function Play.load()
     if Play.faseAtual == 1 then
         Player.load() 
-    elseif Play.faseAtual == 2 then
+    elseif Play.faseAtual >= 2 then -- Alterado para abranger a Fase 2 e 3
         Player.form = "nave"
         Player.width = 16
         Player.height = 16
@@ -48,7 +48,7 @@ function Play.update(dt)
     -- ==========================================================
     -- SISTEMA DE SPAWN ALEATÓRIO POR TEMPO (APENAS FASE 2)
     -- ==========================================================
-    if Play.faseAtual == 2 and Enemy.hp > 0 then
+    if Play.faseAtual >= 2 and Enemy.hp > 0 then
         ambientDropTimer = ambientDropTimer + dt
         if ambientDropTimer >= ambientDropCooldown then
             ambientDropTimer = 0 -- Reseta o cronômetro
@@ -95,8 +95,14 @@ function Play.update(dt)
     end
     
     if Enemy.hp <= 0 then
-        print("VITORIA! Entrando no Hangar...")
-        MudarEstado("shop")
+        if Play.faseAtual == 3 then
+            print("VITÓRIA FINAL! O Silêncio foi quebrado.")
+            -- Reinicia para o menu após zerar (você pode criar uma tela de créditos no futuro)
+            MudarEstado("menu")
+        else
+            print("VITORIA! Entrando no Hangar...")
+            MudarEstado("shop")
+        end
     end
 
     -- Colisão: Tiros do Inimigo vs Jogador
