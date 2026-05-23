@@ -17,26 +17,32 @@ function Shop.load()
         {
             name = "Blindagem (Max HP)",
             desc = "Aumenta a integridade estrutural da maquina em 20 pontos e a repara.",
-            cost = 50,
-            action = function()
+            cost = 45,
+            action = function(self)
                 Player.maxHp = Player.maxHp + 20
                 Player.hp = Player.maxHp -- Cura total como bonus
+                local Costpercent = self.cost * 0.10
+                self.cost = math.ceil(self.cost + Costpercent) -- Aumenta o custo do próximo upgrade em 5%
             end
         },
         {
             name = "Reator de Foco",
-            desc = "Expande a capacidade maxima de energia para o Poder Especial.",
+            desc = "Diminui a quantidade requerida de energia para o Poder Especial.",
             cost = 75,
-            action = function()
-                Player.maxEnergy = Player.maxEnergy + 50
+            action = function(self)
+                Player.maxEnergy = Player.maxEnergy - 10
+                local Costpercent = self.cost * 0.10
+                self.cost = math.ceil(self.cost + Costpercent) -- Aumenta o custo do próximo upgrade em 5%
             end
         },
         {
             name = "Propulsores Leves",
             desc = "Aumenta a velocidade de esquiva e movimentacao.",
-            cost = 100,
-            action = function()
-                Player.speed = Player.speed + 30
+            cost = 50,
+            action = function(self)
+                Player.speed = Player.speed + 8
+                local Costpercent = self.cost * 0.10 
+                self.cost = math.ceil(self.cost + Costpercent) -- Aumenta o custo do próximo upgrade em 5%
             end
         }
     }
@@ -61,12 +67,12 @@ function Shop.update(dt)
     end
 
     -- Confirmação de Compra (Barra de Espaço)
-    if love.keyboard.isDown("b") then
+    if love.keyboard.isDown("space") then
         local item = items[selectedIndex]
         
         if Player.coins >= item.cost then
             Player.coins = Player.coins - item.cost
-            item.action() -- Executa a função anônima do item
+            item.action(item) -- Executa a função anônima do item
             print("Sucesso: Adquiriu " .. item.name)
         else
             print("Aviso: Fundos insuficientes para " .. item.name)

@@ -18,7 +18,7 @@ function Coin.spawn(x, y, dropType)
         height = 6,
         speed = 60, -- Um pouco mais lento na fase 2 para dar tempo de desviar e coletar
         type = t,
-        value = (t == "coin") and 5 or 0, -- Moeda vale 5, Cura manipula HP diretamente
+        value = (t == "coin") and 10 or 0, -- Moeda vale 10, Cura manipula HP diretamente
         healAmount = (t == "heal") and 15 or 0 -- Cura recupera 15 de HP
     }
     table.insert(activeCoins, newDrop)
