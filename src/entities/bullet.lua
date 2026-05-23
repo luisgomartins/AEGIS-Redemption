@@ -11,39 +11,33 @@ function Bullet.spawn(x, y)
         y = y,
         width = 4,
         height = 10,
-        speed = 400, -- Mais rápido que o jogador, pois é um projétil
-        damage = 10,  -- Dano base definido no GDD
-        isSpecial = false -- Flag para diferenciar
+        speed = 400,
+        damage = 500,
+        isSpecial = false
     }
     table.insert(activeBullets, newBullet)
 end
 
 -- NOVA FUNÇÃO: Fábrica do Tiro Especial
-function Bullet.spawnSpecial(x, y) -- Esta função pode ser chamada para criar um tiro mais poderoso, por exemplo, quando o jogador ativa um poder especial
-    local specialBullet = { -- Propriedades do tiro especial, ajustadas para ser mais impactante visualmente e em termos de gameplay
-        x = x, -- A posição inicial do tiro, geralmente a posição do jogador que atira
-        y = y, -- O tiro começa na mesma altura do jogador, mas pode ser ajustado para sair de uma "boca de canhão" específica
-        width = 16,  -- Tiro muito mais largo
-        height = 32, -- Tiro mais comprido
-        speed = 50, -- Muito mais lento que o tiro normal, para dar um efeito de "poder carregado" e permitir que o jogador posicione melhor
-        damage = 100, -- 10x o dano de um tiro normal (Poder Destrutivo!)
-        isSpecial = true -- Flag ativada
+function Bullet.spawnSpecial(x, y)
+    local specialBullet = {
+        x = x,
+        y = y,
+        width = 16,
+        height = 32,
+        speed = 50,
+        damage = 100,
+        isSpecial = true
     }
     table.insert(activeBullets, specialBullet)
 end
 
 function Bullet.update(dt)
-    -- ATENÇÃO AQUI: Quando removemos itens de uma tabela no Lua, 
-    -- devemos iterar de trás para frente. Se iterarmos do início ao fim (1 ao #)
-    -- e removermos o índice 2, o índice 3 vira 2, e o loop pula uma verificação.
     for i = #activeBullets, 1, -1 do
         local b = activeBullets[i]
-        
-        -- Movimenta o tiro para cima (eixo Y negativo)
+
         b.y = b.y - b.speed * dt
-        
-        -- Otimização: Se o tiro sair completamente pelo topo da tela (y < 0),
-        -- nós o removemos da tabela para liberar memória.
+
         if b.y + b.height < 0 then
             table.remove(activeBullets, i)
         end
@@ -51,15 +45,12 @@ function Bullet.update(dt)
 end
 
 function Bullet.draw()
-    
+
     for _, b in ipairs(activeBullets) do
-        -- Diferencia a cor baseada na flag do projétil
         if b.isSpecial then
-            -- Azul/Ciano brilhante para o Especial
-            love.graphics.setColor(0, 1, 1) 
+            love.graphics.setColor(0, 1, 1)
         else
-            -- Verde para o tiro comum
-            love.graphics.setColor(0.5, 1, 0.5) 
+            love.graphics.setColor(0.5, 1, 0.5)
         end
         love.graphics.rectangle("fill", b.x, b.y, b.width, b.height)
     end

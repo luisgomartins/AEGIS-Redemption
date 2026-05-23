@@ -273,21 +273,21 @@ function Enemy.update(dt)
             
             if Enemy.patternIndex == 1 then
                 -- PADRÃO 1: Vórtice de Vácuo (Espiral Dupla de alto dano)
-                Enemy.shootCooldown = 0.04 -- Muito rápido
+                Enemy.shootCooldown = 0.05 -- Muito rápido
                 Enemy.spiralAngle = Enemy.spiralAngle + 0.3
                 
                 -- Note o envio de 40 de dano e 180 de velocidade (supera os valores padrões)
                 -- Espiral Horária
-                EnemyBullet.spawn(cx, cy, math.cos(Enemy.spiralAngle) * 1.5, math.sin(Enemy.spiralAngle) * 1.5, 40, 180)
+                EnemyBullet.spawn(cx, cy, math.cos(Enemy.spiralAngle) * 1.5, math.sin(Enemy.spiralAngle) * 1.5, 40, 90)
                 -- Espiral Anti-horária
-                EnemyBullet.spawn(cx, cy, math.cos(-Enemy.spiralAngle) * 1.5, math.sin(-Enemy.spiralAngle) * 1.5, 40, 180)
+                EnemyBullet.spawn(cx, cy, math.cos(-Enemy.spiralAngle) * 1.5, math.sin(-Enemy.spiralAngle) * 1.5, 40, 90)
                 
             elseif Enemy.patternIndex == 2 then
                 -- PADRÃO 2: Matriz de Aniquilação (Explosão Radial Densa)
                 Enemy.shootCooldown = 1.2
                 for i = 1, 24 do -- 24 tiros simultâneos criando um anel
                     local angulo = (i / 24) * (math.pi * 2)
-                    EnemyBullet.spawn(cx, cy, math.cos(angulo) * 1.8, math.sin(angulo) * 1.8, 30, 140)
+                    EnemyBullet.spawn(cx, cy, math.cos(angulo) * 1.8, math.sin(angulo) * 1.8, 30, 80)
                 end
             end
             

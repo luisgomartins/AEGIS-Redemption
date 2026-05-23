@@ -1,6 +1,8 @@
 -- src/states/gameover.lua
 local GameOver = {}
 local Play = require "src.states.play"
+local EnemyBullet = require "src.entities.enemy_bullet"
+local PlayerLoad = require "src.entities.player"
 
 local inputCooldown = 0
 
@@ -24,9 +26,12 @@ function GameOver.keypressed(key)
 
     -- Se o timer zerou, aceitamos o input normalmente:
     if key == "r" then
-        MudarEstado("play") 
+        EnemyBullet.clear() 
+        PlayerLoad.hp = PlayerLoad.maxHp
+        MudarEstado("play")
     elseif key == "return" or key == "backspace" then
         Play.faseAtual = 1
+        EnemyBullet.clear() 
         MudarEstado("menu")
     end
 end

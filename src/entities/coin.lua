@@ -10,16 +10,16 @@ local VIRTUAL_HEIGHT = 180
 -- Modificado: Agora aceita o tipo do drop ("coin" ou "heal")
 function Coin.spawn(x, y, dropType)
     local t = dropType or "coin"
-    
+
     local newDrop = {
         x = x,
         y = y,
         width = 6,
         height = 6,
-        speed = 60, -- Um pouco mais lento na fase 2 para dar tempo de desviar e coletar
+        speed = 60,
         type = t,
-        value = (t == "coin") and 10 or 0, -- Moeda vale 10, Cura manipula HP diretamente
-        healAmount = (t == "heal") and 15 or 0 -- Cura recupera 15 de HP
+        value = (t == "coin") and 10 or 0,
+        healAmount = (t == "heal") and 15 or 0
     }
     table.insert(activeCoins, newDrop)
 end
@@ -42,14 +42,13 @@ end
 function Coin.draw()
     for _, c in ipairs(activeCoins) do
         if c.type == "coin" then
-            love.graphics.setColor(1, 0.8, 0) -- Amarelo Ouro para moedas
+            love.graphics.setColor(1, 0.8, 0)
             love.graphics.rectangle("fill", c.x, c.y, c.width, c.height)
         elseif c.type == "heal" then
-            love.graphics.setColor(0.2, 1, 0.2) -- Verde brilhante para Kit de Reparo (GDD)
+            love.graphics.setColor(0.2, 1, 0.2)
             love.graphics.rectangle("fill", c.x, c.y, c.width, c.height)
         end
     end
-    -- Reset padrão da cor do framework
     love.graphics.setColor(1, 1, 1)
 end
 

@@ -10,10 +10,9 @@ function EnemyBullet.spawn(x, y, dx, dy, customDamage, customSpeed)
     local newBullet = {
         x = x, 
         y = y,
-        width = 6, 
-        height = 6,
+        radius = 3,
         speed = customSpeed or 150, -- Usa a velocidade customizada ou o padrão 150
-        damage = 0, -- Usa o dano customizado ou o padrão 20
+        damage = customDamage or 20, -- Usa o dano customizado ou o padrão 20
         dx = dx or 0,
         dy = dy or 1
     }
@@ -38,7 +37,7 @@ end
 function EnemyBullet.draw()
     love.graphics.setColor(1, 0.6, 0.1)
     for _, b in ipairs(activeBullets) do
-        love.graphics.rectangle("fill", b.x, b.y, b.width, b.height)
+        love.graphics.circle("fill", b.x, b.y, b.radius)
     end
 end
 
