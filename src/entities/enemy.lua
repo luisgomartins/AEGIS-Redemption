@@ -80,6 +80,7 @@ end
 
 function Enemy.update(dt)
     if Enemy.faseAtual == 1 then
+    
         -- ==========================================
         -- IA FASE 1: Ping-Pong Linear e Enrage
         -- ==========================================
@@ -262,6 +263,7 @@ function Enemy.update(dt)
         if Enemy.attackTimer >= 5 then
             Enemy.attackTimer = 0
             Enemy.patternIndex = Enemy.patternIndex == 1 and 2 or 1
+            EnemyBullet.clear()
         end
         
         local cx = Enemy.x + (Enemy.width / 2)
@@ -272,19 +274,18 @@ function Enemy.update(dt)
         if Enemy.shootTimer <= 0 then
             
             if Enemy.patternIndex == 1 then
-                -- PADRÃO 1: Vórtice de Vácuo (Espiral Dupla de alto dano)
-                Enemy.shootCooldown = 0.05 -- Muito rápido
+                -- PADRÃO 1: Vórtice de Vácuo (Espiral Dupla)
+                Enemy.shootCooldown = 0.05
                 Enemy.spiralAngle = Enemy.spiralAngle + 0.3
                 
-                -- Note o envio de 40 de dano e 180 de velocidade (supera os valores padrões)
                 -- Espiral Horária
                 EnemyBullet.spawn(cx, cy, math.cos(Enemy.spiralAngle) * 1.5, math.sin(Enemy.spiralAngle) * 1.5, 40, 90)
                 -- Espiral Anti-horária
                 EnemyBullet.spawn(cx, cy, math.cos(-Enemy.spiralAngle) * 1.5, math.sin(-Enemy.spiralAngle) * 1.5, 40, 90)
-                
             elseif Enemy.patternIndex == 2 then
+                
                 -- PADRÃO 2: Matriz de Aniquilação (Explosão Radial Densa)
-                Enemy.shootCooldown = 1.2
+                Enemy.shootCooldown = 1
                 for i = 1, 24 do -- 24 tiros simultâneos criando um anel
                     local angulo = (i / 24) * (math.pi * 2)
                     EnemyBullet.spawn(cx, cy, math.cos(angulo) * 1.8, math.sin(angulo) * 1.8, 30, 80)

@@ -21,7 +21,6 @@ function Victory.keypressed(key)
     if inputCooldown > 0 then 
         return 
     end
-
     -- Se o tempo já passou, o input é processado de forma segura
     if key == "return" then
         Play.faseAtual = 1 -- Reiniciamos o progresso para uma futura jogada
@@ -31,7 +30,6 @@ end
 
 function Victory.draw()
     love.graphics.clear(0.05, 0.08, 0.15) -- Fundo espacial profundo
-
     love.graphics.setColor(0.2, 0.8, 1) -- Ciano brilhante (Cor da Aegis)
     love.graphics.printf("PROTOCOLO AEGIS CONCLUIDO", 0, 30, 320, "center")
 
@@ -39,7 +37,6 @@ function Victory.draw()
     -- Quebras de linha (\n) para manter o texto legível
     local textoFinal = "O Silencio foi quebrado.\nO nucleo dos Ecos entrou em colapso.\n\nKael Nova sobrevive.\nA Unidade Aegis encontrou a sua redencao."
     love.graphics.printf(textoFinal, 10, 70, 300, "center")
-
     -- Texto intermitente (piscar) para dar um toque Arcade
     if math.floor(love.timer.getTime() * 2) % 2 == 0 then
         love.graphics.setColor(0.8, 0.8, 0.8)

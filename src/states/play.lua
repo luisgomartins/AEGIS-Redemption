@@ -21,7 +21,6 @@ local function CheckCircleCollision(x1, y1, r1, x2, y2, r2)
     local dy = y1 - y2
     local distanceSquared = (dx * dx) + (dy * dy)
     local radiusSum = r1 + r2
-
     return distanceSquared < (radiusSum * radiusSum)
 end
 
@@ -29,10 +28,8 @@ end
 local function CheckRectCircleCollision(rectX, rectY, rectWidth, rectHeight, circleX, circleY, circleRadius)
     local closestX = math.max(rectX, math.min(circleX, rectX + rectWidth))
     local closestY = math.max(rectY, math.min(circleY, rectY + rectHeight))
-
     local dx = circleX - closestX
     local dy = circleY - closestY
-
     return (dx * dx + dy * dy) < (circleRadius * circleRadius)
 end
 
@@ -54,7 +51,6 @@ function Play.load()
         Player.x = (320 / 2) - (Player.width / 2)
         Player.y = 180 - Player.height - 10
     end
-
     Enemy.load(Play.faseAtual)
     Coin.clear() 
     ambientDropTimer = 0 -- Inicializa o timer de drops
@@ -77,42 +73,48 @@ function Play.update(dt)
             local randomX = math.random(10, 300)
             local randomY = -10 -- Começa um pouco acima da tela para suavizar a entrada
             
-            -- Sorteia o tipo: 70% de chance de ser Moeda, 30% de ser Cura
-            local chance = math.random()
-            if chance <= 0.70 then
-                Coin.spawn(randomX, randomY, "coin")
-            else
+            -- Fase 3: Apenas Cura. Fases 1-2: 70% Moeda, 30% Cura
+            if Play.faseAtual == 3 then
                 Coin.spawn(randomX, randomY, "heal")
+            else
+                local chance = math.random()
+                if chance <= 0.70 then
+                    Coin.spawn(randomX, randomY, "coin")
+                else
+                    Coin.spawn(randomX, randomY, "heal")
+                end
             end
         end
     end
 
     if Enemy.hp > 0 then
         Enemy.update(dt)
-
         local bullets = Bullet.getAll()
         for i = #bullets, 1, -1 do
             local b = bullets[i]
-
             if CheckRectRectCollision(b.x, b.y, b.width, b.height, Enemy.x, Enemy.y, Enemy.width, Enemy.height) then
                 Enemy.hp = Enemy.hp - b.damage
-
                 if not b.isSpecial then
                     Player.energy = math.min(Player.energy + 10, Player.maxEnergy)
                 end
-
                 if math.random() <= 0.25 then
                     local dropX = Enemy.x + (Enemy.width / 2) - 3
                     local dropY = Enemy.y + (Enemy.height / 2)
-                    Coin.spawn(dropX, dropY, "coin")
+                    -- Fase 3: Apenas Cura. Fases 1-2: Moeda
+                    if Play.faseAtual == 3 then
+                        Coin.spawn(dropX, dropY, "heal")
+                    else
+                        Coin.spawn(dropX, dropY, "coin")
+                    end
                 end
-
                 table.remove(bullets, i)
             end
         end
     end
     
     if Enemy.hp <= 0 then
+        EnemyBullet.clear()
+        Bullet.clear()
         if Play.faseAtual == 3 then
             print("VITÓRIA FINAL! O Silêncio foi quebrado.")
             -- Reinicia para o menu após zerar (você pode criar uma tela de créditos no futuro)
@@ -133,7 +135,6 @@ function Play.update(dt)
         if CheckCircleCollision(eb.x, eb.y, eb.radius, playerCenterX, playerCenterY, Player.radius) then
             Player.hp = Player.hp - eb.damage
             table.remove(eBullets, i)
-
             if Player.hp <= 0 then
                 print("GAME OVER - Destruído")
                 MudarEstado("gameover")

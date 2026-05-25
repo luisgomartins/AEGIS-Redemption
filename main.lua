@@ -20,7 +20,7 @@ local estados = {}
 function love.load()
     -- Garante a nitidez do redimensionamento do pixel art
     love.graphics.setDefaultFilter('nearest', 'nearest')
-
+    love.window.setTitle("AEGIS: Redemption")
     -- Inicializa o canvas virtual
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
