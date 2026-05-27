@@ -7,8 +7,8 @@ local Player = {}
 local Bullet = require "src.entities.bullet"
 
 -- Constante local para a largura da tela baseada na sua configuração
-local VIRTUAL_WIDTH = 320
-local VIRTUAL_HEIGHT = 180 
+local VIRTUAL_WIDTH = 640
+local VIRTUAL_HEIGHT = 360 
 
 function Player.load()
 
@@ -45,7 +45,7 @@ function Player.update(dt)
     end
     -- 2. Clamping (Restrição de Limites da Tela)
     
-    -- Garante que o tanque não saia da área visível (0 a 320 pixels)
+    -- Garante que o tanque não saia da área visível (0 a 640 pixels)
     if Player.x < 0 then
         Player.x = 0
     elseif Player.x + Player.width > VIRTUAL_WIDTH then

@@ -5,7 +5,7 @@ local Coin = {}
 local activeCoins = {}
 
 -- Referência à altura da tela para o "Garbage Collection" (limpeza)
-local VIRTUAL_HEIGHT = 180
+local VIRTUAL_HEIGHT = 360
 
 -- Modificado: Agora aceita o tipo do drop ("coin" ou "heal")
 function Coin.spawn(x, y, dropType)

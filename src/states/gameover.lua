@@ -40,13 +40,13 @@ function GameOver.draw()
     love.graphics.clear(0.15, 0.02, 0.02)
 
     love.graphics.setColor(1, 0.2, 0.2)
-    love.graphics.printf("SISTEMAS CRITICOS FALHARAM", 0, 60, 320, "center")
+    love.graphics.printf("SISTEMAS CRITICOS FALHARAM", 0, 60, 640, "center")
 
     love.graphics.setColor(0.7, 0.7, 0.7)
-    love.graphics.printf("A Maquina foi destruida.", 0, 90, 320, "center")
+    love.graphics.printf("A Maquina foi destruida.", 0, 90, 640, "center")
 
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("[R] Tentar Novamente   [ENTER] Menu", 0, 140, 320, "center")
+    love.graphics.printf("[R] Tentar Novamente   [ENTER] Menu", 0, 140, 640, "center")
 end
 
 return GameOver

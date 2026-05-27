@@ -98,7 +98,7 @@ function Shop.draw()
 
     -- Cabeçalho
     love.graphics.setColor(1, 0.8, 0) -- Amarelo
-    love.graphics.printf("TERMINAL DE UPGRADES AEGIS", 0, 15, 320, "center")
+    love.graphics.printf("TERMINAL DE UPGRADES AEGIS", 0, 15, 640, "center")
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("Creditos: $" .. Player.coins, 10, 40)
 
@@ -120,7 +120,7 @@ function Shop.draw()
 
     -- Instrução de avanço
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("[ENTER] Iniciar Fase 2", 0, 165, 320, "center")
+    love.graphics.printf("[ENTER] Iniciar Fase 2", 0, 165, 640, "center")
 end
 
 return Shop

@@ -4,8 +4,8 @@ local Enemy = {}
 local EnemyBullet = require "src.entities.enemy_bullet" 
 local Player = require "src.entities.player"
 
-local VIRTUAL_WIDTH = 320 
-local VIRTUAL_HEIGHT = 180 
+local VIRTUAL_WIDTH = 640 
+local VIRTUAL_HEIGHT = 360 
 
 function Enemy.load(fase)
     Enemy.faseAtual = fase 

@@ -48,8 +48,8 @@ function Play.load()
         Player.form = "nave"
         Player.width = 16
         Player.height = 16
-        Player.x = (320 / 2) - (Player.width / 2)
-        Player.y = 180 - Player.height - 10
+        Player.x = (640 / 2) - (Player.width / 2)
+        Player.y = 360 - Player.height - 10
     end
     Enemy.load(Play.faseAtual)
     Coin.clear() 
@@ -69,7 +69,7 @@ function Play.update(dt)
         if ambientDropTimer >= ambientDropCooldown then
             ambientDropTimer = 0 -- Reseta o cronômetro
             
-            -- Escolhe uma posição X aleatória válida dentro das bordas da tela (320px)
+            -- Escolhe uma posição X aleatória válida dentro das bordas da tela (640px)
             local randomX = math.random(10, 300)
             local randomY = -10 -- Começa um pouco acima da tela para suavizar a entrada
             
@@ -192,7 +192,7 @@ function Play.draw()
         Enemy.draw()
     else
         love.graphics.setColor(0.2, 1, 0.2)
-        love.graphics.printf("ECO DESTRUIDO!", 0, 80, 320, "center")
+        love.graphics.printf("ECO DESTRUIDO!", 0, 80, 640, "center")
     end
     
     Hud.draw(Player, Enemy)

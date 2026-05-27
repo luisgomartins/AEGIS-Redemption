@@ -40,7 +40,7 @@ function Hud.draw(player, enemy) -- Recebe o jogador e o inimigo para acessar se
     if enemy and enemy.hp > 0 then
         local enemyHpRatio = math.max(0, enemy.hp) / enemy.maxHp
         local bossBarWidth = 150
-        local startX = (320 / 2) - (bossBarWidth / 2) -- Centralizado na resolução virtual de 320
+        local startX = (640 / 2) - (bossBarWidth / 2) -- Centralizado na resolução virtual de 640
         
         love.graphics.setColor(0.2, 0.2, 0.2)
         love.graphics.rectangle("fill", startX, 10, bossBarWidth, BAR_HEIGHT)
@@ -49,7 +49,7 @@ function Hud.draw(player, enemy) -- Recebe o jogador e o inimigo para acessar se
         love.graphics.rectangle("fill", startX, 10, bossBarWidth * enemyHpRatio, BAR_HEIGHT)
         
         love.graphics.setColor(1, 1, 1)
-        love.graphics.printf("ECO", 0, 0, 320, "center")
+        love.graphics.printf("ECO", 0, 0, 640, "center")
     end
     
     -- Resetar a cor para não afetar as próximas renderizações no main loop

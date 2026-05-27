@@ -2,8 +2,8 @@
 
 local EnemyBullet = {}
 local activeBullets = {}
-local VIRTUAL_HEIGHT = 180
-local VIRTUAL_WIDTH = 320 -- Adicionado para checagem lateral
+local VIRTUAL_HEIGHT = 360
+local VIRTUAL_WIDTH = 640 -- Adicionado para checagem lateral
 
 -- Agora recebemos dx e dy como parâmetros opcionais
 function EnemyBullet.spawn(x, y, dx, dy, customDamage, customSpeed)

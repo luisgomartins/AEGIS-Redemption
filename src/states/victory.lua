@@ -31,7 +31,7 @@ end
 function Victory.draw()
     love.graphics.clear(0.05, 0.08, 0.15) -- Fundo espacial profundo
     love.graphics.setColor(0.2, 0.8, 1) -- Ciano brilhante (Cor da Aegis)
-    love.graphics.printf("PROTOCOLO AEGIS CONCLUIDO", 0, 30, 320, "center")
+    love.graphics.printf("PROTOCOLO AEGIS CONCLUIDO", 0, 30, 640, "center")
 
     love.graphics.setColor(1, 1, 1)
     -- Quebras de linha (\n) para manter o texto legível
@@ -40,7 +40,7 @@ function Victory.draw()
     -- Texto intermitente (piscar) para dar um toque Arcade
     if math.floor(love.timer.getTime() * 2) % 2 == 0 then
         love.graphics.setColor(0.8, 0.8, 0.8)
-        love.graphics.printf("[ENTER] Retornar a Base", 0, 150, 320, "center")
+        love.graphics.printf("[ENTER] Retornar a Base", 0, 150, 640, "center")
     end
 end
 

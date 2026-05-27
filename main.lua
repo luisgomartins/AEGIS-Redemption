@@ -8,8 +8,8 @@ math.randomseed(os.time()) -- Inicializa a semente de números aleatórios
 local push = require "libs.push"
 
 -- 3. Constantes de Resolução
-local VIRTUAL_WIDTH = 320
-local VIRTUAL_HEIGHT = 180
+local VIRTUAL_WIDTH = 640
+local VIRTUAL_HEIGHT = 360
 local WINDOW_WIDTH = 1280
 local WINDOW_HEIGHT = 720
 
@@ -47,7 +47,7 @@ function love.update(dt)
 end
 
 function love.draw()
-    push:apply("start") -- Inicia a renderização na resolução 320x180
+    push:apply("start") -- Inicia a renderização na resolução 640x360
     
     if estados[EstadoAtual].draw then
         estados[EstadoAtual].draw()
