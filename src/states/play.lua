@@ -61,10 +61,11 @@ function Play.update(dt)
     Bullet.update(dt)
     EnemyBullet.update(dt)
     Coin.update(dt) 
-    -- =====================================
-    -- SISTEMA DE SPAWN ALEATÓRIO POR TEMPO 
-    -- =====================================
-    if Play.faseAtual >= 1 then
+
+    -- ==========================================================
+    -- SISTEMA DE SPAWN ALEATÓRIO POR TEMPO (APENAS FASE 2)
+    -- ==========================================================
+    if Play.faseAtual >= 2 and Enemy.hp > 0 then
         ambientDropTimer = ambientDropTimer + dt
         if ambientDropTimer >= ambientDropCooldown then
             ambientDropTimer = 0 -- Reseta o cronômetro
