@@ -25,7 +25,6 @@ function Player.load()
     Player.maxEnergy = 100 -- Limite máximo da barra
     Player.shootTimer = 0 -- Timer para controle de tiro
     Player.shootCooldown = 0.15 -- Tempo em segundos entre cada tiro (150ms)
-    Player.radius = 8
 end
 
 function Player.update(dt)
@@ -92,10 +91,10 @@ function Player.update(dt)
 end
 
 function Player.draw()
+    -- Renderização temporária (um retângulo) para debug visual
+    -- Branco: love.graphics.setColor(1, 1, 1) é o padrão no LÖVE 11+
     love.graphics.setColor(1, 1, 1)
-    local centerX = Player.x + (Player.width / 2)
-    local centerY = Player.y + (Player.height / 2)
-    love.graphics.circle("fill", centerX, centerY, Player.radius)
+    love.graphics.rectangle("fill", Player.x, Player.y, Player.width, Player.height)
 end
 
 return Player

@@ -15,30 +15,12 @@ Play.faseAtual = 1
 local ambientDropTimer = 0
 local ambientDropCooldown = 3.5 -- A cada 3.5 segundos surge um item do céu
 
--- Função matemática para detecção circular
-local function CheckCircleCollision(x1, y1, r1, x2, y2, r2)
-    local dx = x1 - x2
-    local dy = y1 - y2
-    local distanceSquared = (dx * dx) + (dy * dy)
-    local radiusSum = r1 + r2
-    return distanceSquared < (radiusSum * radiusSum)
-end
-
--- Função para detecção de colisão retângulo vs círculo
-local function CheckRectCircleCollision(rectX, rectY, rectWidth, rectHeight, circleX, circleY, circleRadius)
-    local closestX = math.max(rectX, math.min(circleX, rectX + rectWidth))
-    local closestY = math.max(rectY, math.min(circleY, rectY + rectHeight))
-    local dx = circleX - closestX
-    local dy = circleY - closestY
-    return (dx * dx + dy * dy) < (circleRadius * circleRadius)
-end
-
--- Função para detecção de colisão retângulo vs retângulo (AABB)
-local function CheckRectRectCollision(rect1X, rect1Y, rect1Width, rect1Height, rect2X, rect2Y, rect2Width, rect2Height)
-    return rect1X < rect2X + rect2Width and
-           rect1X + rect1Width > rect2X and
-           rect1Y < rect2Y + rect2Height and
-           rect1Y + rect1Height > rect2Y
+-- Função matemática pura para detecção AABB
+local function CheckCollision(x1, y1, w1, h1, x2, y2, w2, h2)
+    return x1 < x2 + w2 and
+           x2 < x1 + w1 and
+           y1 < y2 + h2 and
+           y2 < y1 + h1
 end
 
 function Play.load()
@@ -90,14 +72,20 @@ function Play.update(dt)
 
     if Enemy.hp > 0 then
         Enemy.update(dt)
+        
+        -- Lógica de Colisão: Tiros do Kael vs Boss
         local bullets = Bullet.getAll()
         for i = #bullets, 1, -1 do
             local b = bullets[i]
-            if CheckRectRectCollision(b.x, b.y, b.width, b.height, Enemy.x, Enemy.y, Enemy.width, Enemy.height) then
+            
+            if CheckCollision(b.x, b.y, b.width, b.height, Enemy.x, Enemy.y, Enemy.width, Enemy.height) then
                 Enemy.hp = Enemy.hp - b.damage
-                if not b.isSpecial then
-                    Player.energy = math.min(Player.energy + 10, Player.maxEnergy)
+                
+                if not b.isSpecial then 
+                    Player.energy = math.min(Player.energy + 10, Player.maxEnergy) 
                 end
+
+                -- Mantém o drop por dano tradicional (apenas moedas normais de impacto)
                 if math.random() <= 0.25 then
                     local dropX = Enemy.x + (Enemy.width / 2) - 3
                     local dropY = Enemy.y + (Enemy.height / 2)
@@ -130,10 +118,8 @@ function Play.update(dt)
     local eBullets = EnemyBullet.getAll()
     for i = #eBullets, 1, -1 do
         local eb = eBullets[i]
-        local playerCenterX = Player.x + (Player.width / 2)
-        local playerCenterY = Player.y + (Player.height / 2)
-
-        if CheckCircleCollision(eb.x, eb.y, eb.radius, playerCenterX, playerCenterY, Player.radius) then
+        
+        if CheckCollision(eb.x, eb.y, eb.width, eb.height, Player.x, Player.y, Player.width, Player.height) then
             Player.hp = Player.hp - eb.damage
             table.remove(eBullets, i)
             if Player.hp <= 0 then
@@ -149,18 +135,17 @@ function Play.update(dt)
     local activeCoins = Coin.getAll()
     for i = #activeCoins, 1, -1 do
         local c = activeCoins[i]
-        local playerCenterX = Player.x + (Player.width / 2)
-        local playerCenterY = Player.y + (Player.height / 2)
-
-        if CheckRectCircleCollision(c.x, c.y, c.width, c.height, playerCenterX, playerCenterY, Player.radius) then
-
+        if CheckCollision(c.x, c.y, c.width, c.height, Player.x, Player.y, Player.width, Player.height) then
+            
+            -- Tratamento polimórfico baseado no tipo do drop coletado
             if c.type == "coin" then
                 Player.coins = Player.coins + c.value
             elseif c.type == "heal" then
+                -- Cura o jogador sem passar do HP Máximo configurado no GDD (e preserva upgrades)
                 Player.hp = math.min(Player.hp + c.healAmount, Player.maxHp)
                 print("KIT DE REPARO COLETADO! HP Atual: " .. Player.hp)
             end
-
+            
             table.remove(activeCoins, i)
         end
     end
