@@ -65,7 +65,7 @@ function MudarEstado(novoEstado)
         end
     end
 
-    -- Também pare o som de tiro do jogador ao trocar de estado (por exemplo: ir para a loja)
+    -- Para o som de tiro do jogador ao trocar de estados
     local status, Player = pcall(require, "src.entities.player")
     if status and Player and Player.shootSound then
         if Player.shootSound:isPlaying() then

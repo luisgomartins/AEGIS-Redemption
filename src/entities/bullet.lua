@@ -12,7 +12,7 @@ function Bullet.spawn(x, y)
         width = 4 * 2,
         height = 10 * 2,
         speed = 500, -- Mais rápido que o jogador, pois é um projétil
-        damage = 500,  -- Dano base definido no GDD
+        damage = 10,  -- Dano base definido no GDD
         isSpecial = false -- Flag para diferenciar
     }
     table.insert(activeBullets, newBullet)
@@ -25,7 +25,7 @@ function Bullet.spawnSpecial(x, y) -- Esta função pode ser chamada para criar 
         y = y, -- O tiro começa na mesma altura do jogador, mas pode ser ajustado para sair de uma "boca de canhão" específica
         width = 16 * 2,  -- Tiro muito mais largo
         height = 32 * 2, -- Tiro mais comprido
-        speed = 50, -- Muito mais lento que o tiro normal, para dar um efeito de "poder carregado" e permitir que o jogador posicione melhor
+        speed = 80, -- Muito mais lento que o tiro normal, para dar um efeito de "poder carregado" e permitir que o jogador posicione melhor
         damage = 100, -- 10x o dano de um tiro normal (Poder Destrutivo!)
         isSpecial = true -- Flag ativada
     }

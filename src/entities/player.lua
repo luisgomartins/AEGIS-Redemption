@@ -33,6 +33,13 @@ function Player.load()
             Player.shootSound:setVolume(0.04)
         end
     end
+    -- Carrega o som do poder especial (executa uma vez ao ativar)
+    if not Player.specialSound then
+        if love and love.audio then
+            Player.specialSound = love.audio.newSource("assets/sfx/laserLarge_001.ogg", "static")
+            Player.specialSound:setVolume(0.4)
+        end
+    end
 end
 
 function Player.update(dt)
@@ -91,7 +98,12 @@ function Player.update(dt)
         
         -- Dispara o Especial
         Bullet.spawnSpecial(specialX, Player.y)
-        
+        -- Toca o som do especial
+        if Player.specialSound then
+            Player.specialSound:stop()
+            Player.specialSound:play()
+        end
+
         -- Reseta a energia (Esgotamento de Foco)
         Player.energy = 0
         print("PODER ESPECIAL LANÇADO!")
