@@ -4,15 +4,15 @@ local Enemy = {}
 local EnemyBullet = require "src.entities.enemy_bullet" 
 local Player = require "src.entities.player"
 
-local VIRTUAL_WIDTH = 320 
-local VIRTUAL_HEIGHT = 180 
+local VIRTUAL_WIDTH = 640 
+local VIRTUAL_HEIGHT = 360 
 
 function Enemy.load(fase)
     Enemy.faseAtual = fase 
     
     if fase == 1 then
-        Enemy.width = 64 
-        Enemy.height = 32
+        Enemy.width = 64 * 2 
+        Enemy.height = 32 * 2
         Enemy.x = (VIRTUAL_WIDTH / 2) - (Enemy.width / 2)
         Enemy.y = 10 
         Enemy.speed = 50 
@@ -27,8 +27,8 @@ function Enemy.load(fase)
     
     elseif fase == 2 then
         -- Configurações do Eco 2: Nave Mãe / Bullet Hell
-        Enemy.width = 48 
-        Enemy.height = 48
+        Enemy.width = 48 * 2 
+        Enemy.height = 48 * 2
         Enemy.x = (VIRTUAL_WIDTH / 2) - (Enemy.width / 2)
         Enemy.y = 20 
         Enemy.speed = 60 
@@ -190,7 +190,7 @@ function Enemy.update(dt)
         -- ESTADO: Mergulhando para o canto
         -- ==========================================
         elseif Enemy.phase2State == "diving" then
-            local diveSpeed = 150 -- Boss desce muito rápido
+            local diveSpeed = 180 -- Boss desce muito rápido
             
             -- Move gradativamente em direção ao alvo
             if Enemy.x < Enemy.targetX then Enemy.x = math.min(Enemy.x + diveSpeed * dt, Enemy.targetX) end
@@ -279,7 +279,7 @@ function Enemy.update(dt)
                 Enemy.spiralAngle = Enemy.spiralAngle + 0.3
                 
                 -- Espiral Horária
-                EnemyBullet.spawn(cx, cy, math.cos(Enemy.spiralAngle) * 1.5, math.sin(Enemy.spiralAngle) * 1.5, 40, 180)
+                EnemyBullet.spawn(cx, cy, math.cos(Enemy.spiralAngle) * 1.5, math.sin(Enemy.spiralAngle) * 1.5, 40, 90)
                 -- Espiral Anti-horária
                 EnemyBullet.spawn(cx, cy, math.cos(-Enemy.spiralAngle) * 1.5, math.sin(-Enemy.spiralAngle) * 1.5, 40, 90)
             elseif Enemy.patternIndex == 2 then

@@ -7,16 +7,16 @@ local Player = {}
 local Bullet = require "src.entities.bullet"
 
 -- Constante local para a largura da tela baseada na sua configuração
-local VIRTUAL_WIDTH = 320
-local VIRTUAL_HEIGHT = 180 
+local VIRTUAL_WIDTH = 640
+local VIRTUAL_HEIGHT = 360
 
 function Player.load()
 
-    Player.width = 24
-    Player.height = 16
+    Player.width = 24 * 2
+    Player.height = 16 * 2
     Player.x = (VIRTUAL_WIDTH / 2) - (Player.width / 2)
     Player.y = VIRTUAL_HEIGHT - Player.height - 10 
-    Player.speed = 120 -- Pixels por segundo
+    Player.speed = 120 * 2 -- Pixels por segundo
     Player.maxHp = 100 -- Valor máximo de HP para referência em cura e UI
     Player.hp = Player.maxHp -- Inicializa o HP do jogador com o valor máximo
     Player.coins = 0   -- Variável para a loja pós-chefe
@@ -25,6 +25,14 @@ function Player.load()
     Player.maxEnergy = 100 -- Limite máximo da barra
     Player.shootTimer = 0 -- Timer para controle de tiro
     Player.shootCooldown = 0.15 -- Tempo em segundos entre cada tiro (150ms)
+    -- Carrega o som do laser (reproduz enquanto a tecla estiver pressionada)
+    if not Player.shootSound then
+        if love and love.audio then
+            Player.shootSound = love.audio.newSource("assets/sfx/laserRetro_004.ogg", "static")
+            Player.shootSound:setLooping(true)
+            Player.shootSound:setVolume(0.04)
+        end
+    end
 end
 
 function Player.update(dt)
@@ -44,7 +52,7 @@ function Player.update(dt)
     end
     -- 2. Clamping (Restrição de Limites da Tela)
     
-    -- Garante que o tanque não saia da área visível (0 a 320 pixels)
+    -- Garante que o tanque não saia da área visível (0 a 640 pixels)
     if Player.x < 0 then
         Player.x = 0
     elseif Player.x + Player.width > VIRTUAL_WIDTH then
@@ -87,6 +95,19 @@ function Player.update(dt)
         -- Reseta a energia (Esgotamento de Foco)
         Player.energy = 0
         print("PODER ESPECIAL LANÇADO!")
+    end
+
+    -- Controle do som de tiro: toca em loop enquanto a tecla Espaço estiver segurada
+    if Player.shootSound then
+        if love.keyboard.isDown("space") then
+            if not Player.shootSound:isPlaying() then
+                Player.shootSound:play()
+            end
+        else
+            if Player.shootSound:isPlaying() then
+                Player.shootSound:stop()
+            end
+        end
     end
 end
 

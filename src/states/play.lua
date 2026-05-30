@@ -28,10 +28,10 @@ function Play.load()
         Player.load() 
     elseif Play.faseAtual >= 2 then -- Alterado para abranger a Fase 2 e 3
         Player.form = "nave"
-        Player.width = 16
-        Player.height = 16
-        Player.x = (320 / 2) - (Player.width / 2)
-        Player.y = 180 - Player.height - 10
+        Player.width = 32
+        Player.height = 32
+        Player.x = (640 / 2) - (Player.width / 2)
+        Player.y = 360 - Player.height - 10
     end
     Enemy.load(Play.faseAtual)
     Coin.clear() 
@@ -44,16 +44,16 @@ function Play.update(dt)
     EnemyBullet.update(dt)
     Coin.update(dt) 
 
-    -- ==========================================================
-    -- SISTEMA DE SPAWN ALEATÓRIO POR TEMPO (APENAS FASE 2)
-    -- ==========================================================
-    if Play.faseAtual >= 2 and Enemy.hp > 0 then
+    -- =====================================
+    -- SISTEMA DE SPAWN ALEATÓRIO POR TEMPO
+    -- =====================================
+    if Play.faseAtual >= 1 then
         ambientDropTimer = ambientDropTimer + dt
         if ambientDropTimer >= ambientDropCooldown then
             ambientDropTimer = 0 -- Reseta o cronômetro
             
-            -- Escolhe uma posição X aleatória válida dentro das bordas da tela (320px)
-            local randomX = math.random(10, 300)
+            -- Escolhe uma posição X aleatória válida dentro das bordas da tela (640px)
+            local randomX = math.random(10, 630)
             local randomY = -10 -- Começa um pouco acima da tela para suavizar a entrada
             
             -- Fase 3: Apenas Cura. Fases 1-2: 70% Moeda, 30% Cura
@@ -167,9 +167,15 @@ function Play.update(dt)
     end
 end
 function Play.draw()
-    love.graphics.clear(0.15, 0.15, 0.18) 
+    love.graphics.clear(0.15, 0.15, 0.18)
 
-    Coin.draw() 
+    -- Borda do mapa para reforçar a área de jogo
+    love.graphics.setColor(0.3, 0.3, 0.45)
+    love.graphics.setLineWidth(2)
+    love.graphics.rectangle("line", 2, 2, 636, 356)
+    love.graphics.setColor(1, 1, 1)
+
+    Coin.draw()
     Bullet.draw()
     EnemyBullet.draw()
     Player.draw()
@@ -178,7 +184,7 @@ function Play.draw()
         Enemy.draw()
     else
         love.graphics.setColor(0.2, 1, 0.2)
-        love.graphics.printf("ECO DESTRUIDO!", 0, 80, 320, "center")
+        love.graphics.printf("ECO DESTRUIDO!", 0, 80, 640, "center")
     end
     
     Hud.draw(Player, Enemy)

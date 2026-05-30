@@ -5,7 +5,7 @@ local Coin = {}
 local activeCoins = {}
 
 -- Referência à altura da tela para o "Garbage Collection" (limpeza)
-local VIRTUAL_HEIGHT = 180
+local VIRTUAL_HEIGHT = 360
 
 -- Modificado: Agora aceita o tipo do drop ("coin" ou "heal")
 function Coin.spawn(x, y, dropType)
@@ -14,8 +14,8 @@ function Coin.spawn(x, y, dropType)
     local newDrop = {
         x = x,
         y = y,
-        width = 6,
-        height = 6,
+        width = 6 * 2,
+        height = 6* 2,
         speed = 60, -- Um pouco mais lento na fase 2 para dar tempo de desviar e coletar
         type = t,
         value = (t == "coin") and 10 or 0, -- Moeda vale 10, Cura manipula HP diretamente

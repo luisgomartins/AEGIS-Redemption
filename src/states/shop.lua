@@ -17,18 +17,24 @@ function Shop.load()
         {
             name = "Blindagem (Max HP)",
             desc = "Aumenta a integridade estrutural da maquina em 20 pontos e a repara.",
-            cost = 50,
+            cost = 45,
             action = function()
                 Player.maxHp = Player.maxHp + 20
                 Player.hp = Player.maxHp -- Cura total como bonus
+
+                local Costpercent = self.cost * 0.10
+                self.cost = math.ceil(self.cost + Costpercent) -- Aumenta o custo do próximo upgrade em 10%
             end
         },
         {
             name = "Reator de Foco",
-            desc = "Expande a capacidade maxima de energia para o Poder Especial.",
+            desc = "Diminui a quantidade requerida de energia para o Poder Especial.",
             cost = 75,
             action = function()
-                Player.maxEnergy = Player.maxEnergy + 50
+                Player.maxEnergy = Player.maxEnergy - 8
+
+                local Costpercent = self.cost * 0.10
+                self.cost = math.ceil(self.cost + Costpercent) -- Aumenta o custo do próximo upgrade em 10%
             end
         },
         {
@@ -36,6 +42,8 @@ function Shop.load()
             desc = "Aumenta a velocidade de esquiva e movimentacao.",
             cost = 100,
             action = function()
+                local Costpercent = self.cost * 0.10
+                self.cost = math.ceil(self.cost + Costpercent) -- Aumenta o custo do próximo upgrade em 10%
                 Player.speed = Player.speed + 30
             end
         }
@@ -92,7 +100,7 @@ function Shop.draw()
 
     -- Cabeçalho
     love.graphics.setColor(1, 0.8, 0) -- Amarelo
-    love.graphics.printf("TERMINAL DE UPGRADES AEGIS", 0, 15, 320, "center")
+    love.graphics.printf("TERMINAL DE UPGRADES AEGIS", 0, 15, 640, "center")
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("Creditos: $" .. Player.coins, 10, 40)
 
@@ -114,7 +122,7 @@ function Shop.draw()
 
     -- Instrução de avanço
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("[ENTER] Iniciar Fase 2", 0, 165, 320, "center")
+    love.graphics.printf("[ENTER] Iniciar Fase 2", 0, 165, 640, "center")
 end
 
 return Shop
