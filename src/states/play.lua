@@ -24,14 +24,71 @@ local function CheckCollision(x1, y1, w1, h1, x2, y2, w2, h2)
 end
 
 function Play.load()
+    -- Carrega as músicas das fases (streaming para mp3) e controla reprodução
+    if love and love.audio then
+        if not Play.music1 then
+            Play.music1 = love.audio.newSource("assets/music/Guardian of The Former Seas.mp3", "stream")
+            Play.music1:setLooping(true)
+            Play.music1:setVolume(0.05)
+        end
+        if not Play.music2 then
+            Play.music2 = love.audio.newSource("assets/music/Pest of The Cosmos.mp3", "stream")
+            Play.music2:setLooping(true)
+            Play.music2:setVolume(0.05)
+        end
+        if not Play.music3 then
+            Play.music3 = love.audio.newSource("assets/music/Unholy Insurgency.mp3", "stream")
+            Play.music3:setLooping(true)
+            Play.music3:setVolume(0.05)
+        end
+    end
+
+    -- Define comportamento por fase e gerencia a música ativa em Play.music
     if Play.faseAtual == 1 then
-        Player.load() 
-    elseif Play.faseAtual >= 2 then -- Alterado para abranger a Fase 2 e 3
+        Player.load()
+        -- toca música 1
+        if Play.music2 and Play.music2:isPlaying() then Play.music2:stop() end
+        if Play.music3 and Play.music3:isPlaying() then Play.music3:stop() end
+        Play.music = Play.music1
+        if Play.music and not Play.music:isPlaying() then Play.music:play() end
+    elseif Play.faseAtual == 2 then
+        -- fase 2: nave
+        if Play.music1 and Play.music1:isPlaying() then Play.music1:stop() end
+        if Play.music3 and Play.music3:isPlaying() then Play.music3:stop() end
+        Play.music = Play.music2
+        if Play.music and not Play.music:isPlaying() then Play.music:play() end
+
         Player.form = "nave"
         Player.width = 32
         Player.height = 32
         Player.x = (640 / 2) - (Player.width / 2)
         Player.y = 360 - Player.height - 10
+    elseif Play.faseAtual == 3 then
+        -- fase 3: toca música 3
+        if Play.music1 and Play.music1:isPlaying() then Play.music1:stop() end
+        if Play.music2 and Play.music2:isPlaying() then Play.music2:stop() end
+        Play.music = Play.music3
+        if Play.music and not Play.music:isPlaying() then Play.music:play() end
+
+        Player.form = "nave"
+        Player.width = 32
+        Player.height = 32
+        Player.x = (640 / 2) - (Player.width / 2)
+        Player.y = 360 - Player.height - 10
+    else
+        -- outras fases: garante que nenhuma música de fase esteja tocando
+        if Play.music1 and Play.music1:isPlaying() then Play.music1:stop() end
+        if Play.music2 and Play.music2:isPlaying() then Play.music2:stop() end
+        if Play.music3 and Play.music3:isPlaying() then Play.music3:stop() end
+        Play.music = nil
+
+        if Play.faseAtual >= 2 then
+            Player.form = "nave"
+            Player.width = 32
+            Player.height = 32
+            Player.x = (640 / 2) - (Player.width / 2)
+            Player.y = 360 - Player.height - 10
+        end
     end
     Enemy.load(Play.faseAtual)
     Coin.clear() 

@@ -58,6 +58,21 @@ end
 
 -- Função auxiliar global para transição de telas
 function MudarEstado(novoEstado)
+    -- Se estivermos saindo da tela de jogo, pare a música da fase (se existir)
+    if EstadoAtual == "play" and estados.play and estados.play.music then
+        if estados.play.music:isPlaying() then
+            estados.play.music:stop()
+        end
+    end
+
+    -- Também pare o som de tiro do jogador ao trocar de estado (por exemplo: ir para a loja)
+    local status, Player = pcall(require, "src.entities.player")
+    if status and Player and Player.shootSound then
+        if Player.shootSound:isPlaying() then
+            Player.shootSound:stop()
+        end
+    end
+
     EstadoAtual = novoEstado
     if estados[EstadoAtual].load then
         estados[EstadoAtual].load()

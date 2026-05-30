@@ -15,7 +15,7 @@ function Enemy.load(fase)
         Enemy.height = 32 * 2
         Enemy.x = (VIRTUAL_WIDTH / 2) - (Enemy.width / 2)
         Enemy.y = 10 
-        Enemy.speed = 50 
+        Enemy.speed = 100 
         Enemy.maxHp = 1000 
         Enemy.hp = Enemy.maxHp 
         Enemy.direction = 1 
@@ -60,8 +60,8 @@ function Enemy.load(fase)
         
     elseif fase == 3 then
         -- Configurações do Eco 3: O Núcleo de Comando
-        Enemy.width = 64 
-        Enemy.height = 64
+        Enemy.width = 64 * 2
+        Enemy.height = 64 * 2
         Enemy.x = (VIRTUAL_WIDTH / 2) - (Enemy.width / 2)
         Enemy.y = 15 
         Enemy.maxHp = 4500 -- Máximo de resistência (GDD)
