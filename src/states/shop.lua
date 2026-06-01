@@ -11,6 +11,26 @@ local inputCooldown = 0 -- Temporizador para evitar "metralhadora" de inputs
 
 function Shop.load()
     selectedIndex = 1
+
+    -- Carrega a música da loja (streaming para mp3)
+    if love and love.audio then
+        if not Shop.music then
+            Shop.music = love.audio.newSource("assets/music/Antarctic Reinforcement - Structured Mix.mp3", "stream")
+            Shop.music:setLooping(true)
+            Shop.music:setVolume(0.05)
+        end
+        if Shop.music and not Shop.music:isPlaying() then
+            Shop.music:play()
+        end
+    end
+
+    -- Carrega o som de confirmação de compra
+    if love and love.audio then
+        if not Shop.purchaseSound then
+            Shop.purchaseSound = love.audio.newSource("assets/sfx/confirmation_004.ogg", "static")
+            Shop.purchaseSound:setVolume(0.07)
+        end
+    end
     
     -- Estrutura de dados dos Upgrades baseada no GDD
     items = {
@@ -18,7 +38,7 @@ function Shop.load()
             name = "Blindagem (Max HP)",
             desc = "Aumenta a integridade estrutural da maquina em 20 pontos e a repara.",
             cost = 45,
-            action = function()
+            action = function(self)
                 Player.maxHp = Player.maxHp + 20
                 Player.hp = Player.maxHp -- Cura total como bonus
 
@@ -30,8 +50,8 @@ function Shop.load()
             name = "Reator de Foco",
             desc = "Diminui a quantidade requerida de energia para o Poder Especial.",
             cost = 75,
-            action = function()
-                Player.maxEnergy = Player.maxEnergy - 8
+            action = function(self)
+                Player.maxEnergy = Player.maxEnergy - 6
 
                 local Costpercent = self.cost * 0.10
                 self.cost = math.ceil(self.cost + Costpercent) -- Aumenta o custo do próximo upgrade em 10%
@@ -41,7 +61,7 @@ function Shop.load()
             name = "Propulsores Leves",
             desc = "Aumenta a velocidade de esquiva e movimentacao.",
             cost = 100,
-            action = function()
+            action = function(self)
                 local Costpercent = self.cost * 0.10
                 self.cost = math.ceil(self.cost + Costpercent) -- Aumenta o custo do próximo upgrade em 10%
                 Player.speed = Player.speed + 30
@@ -69,12 +89,17 @@ function Shop.update(dt)
     end
 
     -- Confirmação de Compra (Barra de Espaço)
-    if love.keyboard.isDown("b") then
+    if love.keyboard.isDown("space") then
         local item = items[selectedIndex]
         
         if Player.coins >= item.cost then
             Player.coins = Player.coins - item.cost
-            item.action() -- Executa a função anônima do item
+            item.action(item) -- Executa a função anônima do item, passando-o como parâmetro
+            -- Toca o som de compra bem-sucedida
+            if Shop.purchaseSound then
+                Shop.purchaseSound:stop()
+                Shop.purchaseSound:play()
+            end
             print("Sucesso: Adquiriu " .. item.name)
         else
             print("Aviso: Fundos insuficientes para " .. item.name)
@@ -122,7 +147,8 @@ function Shop.draw()
 
     -- Instrução de avanço
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("[ENTER] Iniciar Fase 2", 0, 165, 640, "center")
+    love.graphics.printf("[SPACE] Comprar Item", 0, 165, 640, "center")
+    love.graphics.printf("[ENTER] Iniciar Fase 2", 0, 185, 640, "center")
 end
 
 return Shop

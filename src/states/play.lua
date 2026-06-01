@@ -27,17 +27,17 @@ function Play.load()
     -- Carrega as músicas das fases (streaming para mp3) e controla reprodução
     if love and love.audio then
         if not Play.music1 then
-            Play.music1 = love.audio.newSource("assets/music/Guardian of The Former Seas.mp3", "stream")
+            Play.music1 = love.audio.newSource("assets/music/Guardian of The Former Seas_edited.mp3", "stream")
             Play.music1:setLooping(true)
             Play.music1:setVolume(0.05)
         end
         if not Play.music2 then
-            Play.music2 = love.audio.newSource("assets/music/Pest of The Cosmos.mp3", "stream")
+            Play.music2 = love.audio.newSource("assets/music/Pest of The Cosmos_edited.mp3", "stream")
             Play.music2:setLooping(true)
             Play.music2:setVolume(0.05)
         end
         if not Play.music3 then
-            Play.music3 = love.audio.newSource("assets/music/Unholy Insurgency.mp3", "stream")
+            Play.music3 = love.audio.newSource("assets/music/Unholy Insurgency_edited.mp3", "stream")
             Play.music3:setLooping(true)
             Play.music3:setVolume(0.05)
         end
@@ -210,7 +210,7 @@ function Play.update(dt)
     -- ==========================================================
     -- ATALHOS DE DEBUG (REMOVER ANTES DO BUILD FINAL)
     -- ==========================================================
-    --[[]
+    
     if love.keyboard.isDown("1") then
         Play.faseAtual = 1
         Play.load() -- Recarrega as configurações da Fase 1 instantaneamente
@@ -218,7 +218,7 @@ function Play.update(dt)
         Play.faseAtual = 2
         Play.load() -- Transiciona e recarrega os dados para a Fase 2
     end
-    --]]
+    
     if love.keyboard.isDown("backspace") then
         MudarEstado("menu")
     end

@@ -58,10 +58,10 @@ end
 
 -- Função auxiliar global para transição de telas
 function MudarEstado(novoEstado)
-    -- Se estivermos saindo da tela de jogo, pare a música da fase (se existir)
-    if EstadoAtual == "play" and estados.play and estados.play.music then
-        if estados.play.music:isPlaying() then
-            estados.play.music:stop()
+    -- Para qualquer música de estado ativa antes de mudar de tela
+    if EstadoAtual and estados[EstadoAtual] and estados[EstadoAtual].music then
+        if estados[EstadoAtual].music:isPlaying() then
+            estados[EstadoAtual].music:stop()
         end
     end
 
