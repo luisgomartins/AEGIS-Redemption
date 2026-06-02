@@ -75,6 +75,8 @@ function Enemy.load(fase)
         Enemy.patternIndex = 1
         Enemy.spiralAngle = 0
         Enemy.shootTimer = 0
+        
+        Enemy.enraged = false
     end   
 end
 
@@ -106,10 +108,10 @@ function Enemy.update(dt)
             Enemy.shotCount = Enemy.shotCount + 1
             
             if Enemy.shotCount % 2 ~= 0 then
-                EnemyBullet.spawn(spawnX, spawnY, 0, 1.2) 
+                EnemyBullet.spawn(spawnX, spawnY, 0, 1.2, 18)
             else
-                EnemyBullet.spawn(spawnX, spawnY, -0.4, 0.8) 
-                EnemyBullet.spawn(spawnX, spawnY, 0.4, 0.8)  
+                EnemyBullet.spawn(spawnX, spawnY, -0.4, 0.8, 12)
+                EnemyBullet.spawn(spawnX, spawnY, 0.4, 0.8, 12)
             end
             Enemy.shootTimer = Enemy.shootCooldown 
         end
@@ -174,13 +176,13 @@ function Enemy.update(dt)
                     Enemy.shootCooldown = 0.08 
                     Enemy.spiralAngle = Enemy.spiralAngle + 0.35 
                     for i = 0, 1 do 
-                        EnemyBullet.spawn(centroX, centroY, math.cos(Enemy.spiralAngle + (i * math.pi)) * 0.6, math.sin(Enemy.spiralAngle + (i * math.pi)) * 0.6)
+                        EnemyBullet.spawn(centroX, centroY, math.cos(Enemy.spiralAngle + (i * math.pi)) * 0.6, math.sin(Enemy.spiralAngle + (i * math.pi)) * 0.6, 16)
                     end
                 elseif Enemy.currentPattern == 2 then
                     Enemy.shootCooldown = 1.2 
                     for i = 1, 14 do
                         local angulo = (i / 14) * (math.pi * 2)
-                        EnemyBullet.spawn(centroX, centroY, math.cos(angulo) * 0.5, math.sin(angulo) * 0.5)
+                        EnemyBullet.spawn(centroX, centroY, math.cos(angulo) * 0.5, math.sin(angulo) * 0.5, 12)
                     end
                 end
                 Enemy.shootTimer = Enemy.shootCooldown 
@@ -219,7 +221,7 @@ function Enemy.update(dt)
                 -- Cria a parede sólida através de toda a ALTURA do boss, indo de lado
                 for py = Enemy.y, Enemy.y + Enemy.height - 6, 6 do
                     -- dx ganha a direção e velocidade 3 (extremamente rápido), dy é 0
-                    EnemyBullet.spawn(spawnX, py, Enemy.laserDirection * 3.0, 0)
+                    EnemyBullet.spawn(spawnX, py, Enemy.laserDirection * 3.0, 0, 24, 120)
                 end
                 Enemy.laserSpawnTick = 0.03
             end
@@ -253,6 +255,14 @@ function Enemy.update(dt)
         -- IA FASE 3: Curva de Lissajous e Bullet Hell Extremo
         -- ==========================================
         
+        -- Verificação de Enrage (50% de HP)
+        if Enemy.hp <= (Enemy.maxHp / 2) and not Enemy.enraged then
+            Enemy.enraged = true
+            Enemy.patternIndex = 3
+            Enemy.attackTimer = 0
+            print("ECO 3 ENFURECIDO! NOVO PADRÃO ATIVADO!")
+        end
+        
         -- 1. Movimentação (Curva do Infinito)
         Enemy.moveTime = Enemy.moveTime + dt
         Enemy.x = (VIRTUAL_WIDTH / 2) - (Enemy.width / 2) + math.sin(Enemy.moveTime) * 110
@@ -262,14 +272,27 @@ function Enemy.update(dt)
         Enemy.attackTimer = Enemy.attackTimer + dt
         if Enemy.attackTimer >= 5 then
             Enemy.attackTimer = 0
-            Enemy.patternIndex = Enemy.patternIndex == 1 and 2 or 1
+            if Enemy.enraged then
+                -- Em enraged, alterna entre padrões 1, 2 e 3
+                if Enemy.patternIndex == 1 then
+                    Enemy.patternIndex = 2
+                elseif Enemy.patternIndex == 2 then
+                    Enemy.patternIndex = 3
+                else
+                    Enemy.patternIndex = 1
+                end
+            else
+                -- Em normal, alterna entre padrões 1 e 2
+                Enemy.patternIndex = Enemy.patternIndex == 1 and 2 or 1
+            end
+            -- Limpa os tiros toda vez que muda o padrão para dar um respiro pro jogador
             EnemyBullet.clear()
         end
         
         local cx = Enemy.x + (Enemy.width / 2)
         local cy = Enemy.y + (Enemy.height / 2)
         
-        -- 3. Disparo de Padrões
+        -- 4. Disparo de Padrões
         Enemy.shootTimer = Enemy.shootTimer - dt
         if Enemy.shootTimer <= 0 then
             
@@ -279,16 +302,27 @@ function Enemy.update(dt)
                 Enemy.spiralAngle = Enemy.spiralAngle + 0.3
                 
                 -- Espiral Horária
-                EnemyBullet.spawn(cx, cy, math.cos(Enemy.spiralAngle) * 1.5, math.sin(Enemy.spiralAngle) * 1.5, 40, 90)
+                EnemyBullet.spawn(cx, cy, math.cos(Enemy.spiralAngle) * 1.5, math.sin(Enemy.spiralAngle) * 1.5, 40, 100)
                 -- Espiral Anti-horária
-                EnemyBullet.spawn(cx, cy, math.cos(-Enemy.spiralAngle) * 1.5, math.sin(-Enemy.spiralAngle) * 1.5, 40, 90)
+                EnemyBullet.spawn(cx, cy, math.cos(-Enemy.spiralAngle) * 1.5, math.sin(-Enemy.spiralAngle) * 1.5, 40, 100)
             elseif Enemy.patternIndex == 2 then
                 
                 -- PADRÃO 2: Matriz de Aniquilação (Explosão Radial Densa)
                 Enemy.shootCooldown = 1
                 for i = 1, 24 do -- 24 tiros simultâneos criando um anel
                     local angulo = (i / 24) * (math.pi * 2)
-                    EnemyBullet.spawn(cx, cy, math.cos(angulo) * 1.8, math.sin(angulo) * 1.8, 30, 140)
+                    EnemyBullet.spawn(cx, cy, math.cos(angulo) * 1.8, math.sin(angulo) * 1.8, 30, 175)
+                end
+            elseif Enemy.patternIndex == 3 then
+                -- PADRÃO 3: Fragmentação (3 tiros para baixo que se dividem enquanto viajam)
+                Enemy.shootCooldown = 0.8
+                
+                -- 3 tiros principais apontando para baixo (60°, 90°, 120°)
+                local angles = {math.pi / 2 - math.pi / 6, math.pi / 2, math.pi / 2 + math.pi / 6}
+                for _, angle in ipairs(angles) do
+                    local dx = math.cos(angle)
+                    local dy = math.sin(angle)
+                    EnemyBullet.spawn(cx, cy, dx, dy, 35, 130, 0.8, 0)
                 end
             end
             

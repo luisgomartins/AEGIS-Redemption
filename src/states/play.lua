@@ -15,12 +15,25 @@ Play.faseAtual = 1
 local ambientDropTimer = 0
 local ambientDropCooldown = 3.5 -- A cada 3.5 segundos surge um item do céu
 
--- Função matemática pura para detecção AABB
+-- Função para detecção de colisão circular baseada em raio
+-- Calcula o raio a partir da width/height (usa a metade da width como raio)
 local function CheckCollision(x1, y1, w1, h1, x2, y2, w2, h2)
-    return x1 < x2 + w2 and
-           x2 < x1 + w1 and
-           y1 < y2 + h2 and
-           y2 < y1 + h1
+    local r1 = w1 / 2
+    local r2 = w2 / 2
+    
+    -- Centro das entidades
+    local centerX1 = x1 + w1 / 2
+    local centerY1 = y1 + h1 / 2
+    local centerX2 = x2 + w2 / 2
+    local centerY2 = y2 + h2 / 2
+    
+    -- Distância entre os centros
+    local dx = centerX1 - centerX2
+    local dy = centerY1 - centerY2
+    local distance = math.sqrt(dx * dx + dy * dy)
+    
+    -- Colisão ocorre se a distância for menor que a soma dos raios
+    return distance < (r1 + r2)
 end
 
 function Play.load()
@@ -52,6 +65,7 @@ function Play.load()
         Play.music = Play.music1
         if Play.music and not Play.music:isPlaying() then Play.music:play() end
     elseif Play.faseAtual == 2 then
+        Player.load()
         -- fase 2: nave
         if Play.music1 and Play.music1:isPlaying() then Play.music1:stop() end
         if Play.music3 and Play.music3:isPlaying() then Play.music3:stop() end
@@ -64,6 +78,7 @@ function Play.load()
         Player.x = (640 / 2) - (Player.width / 2)
         Player.y = 360 - Player.height - 10
     elseif Play.faseAtual == 3 then
+        Player.load()
         -- fase 3: toca música 3
         if Play.music1 and Play.music1:isPlaying() then Play.music1:stop() end
         if Play.music2 and Play.music2:isPlaying() then Play.music2:stop() end
@@ -83,6 +98,7 @@ function Play.load()
         Play.music = nil
 
         if Play.faseAtual >= 2 then
+            Player.load()
             Player.form = "nave"
             Player.width = 32
             Player.height = 32

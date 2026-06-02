@@ -17,7 +17,7 @@ function Player.load()
     Player.x = (VIRTUAL_WIDTH / 2) - (Player.width / 2)
     Player.y = VIRTUAL_HEIGHT - Player.height - 10 
     Player.speed = 120 * 2 -- Pixels por segundo
-    Player.maxHp = 100 -- Valor máximo de HP para referência em cura e UI
+    Player.maxHp = 10000 -- Valor máximo de HP para referência em cura e UI
     Player.hp = Player.maxHp -- Inicializa o HP do jogador com o valor máximo
     Player.coins = 0   -- Variável para a loja pós-chefe
     Player.form = "tank" -- Fase 1
