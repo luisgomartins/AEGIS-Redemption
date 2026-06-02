@@ -10,6 +10,13 @@ local Bullet = require "src.entities.bullet"
 local VIRTUAL_WIDTH = 640
 local VIRTUAL_HEIGHT = 360
 
+-- Variáveis para animação da sprite do tank
+local tankSpriteSheet = nil
+local tankQuads = {} -- Array com os 3 quads da spritesheet
+local tankCurrentFrame = 1 -- Frame atual (1, 2, ou 3)
+local tankAnimationTimer = 0
+local tankAnimationSpeed = 0.1 -- Tempo entre frames (em segundos)
+
 function Player.load()
 
     Player.width = 24 * 2
@@ -25,6 +32,20 @@ function Player.load()
     Player.maxEnergy = 100 -- Limite máximo da barra
     Player.shootTimer = 0 -- Timer para controle de tiro
     Player.shootCooldown = 0.15 -- Tempo em segundos entre cada tiro (150ms)
+    
+    -- Carrega a spritesheet do tank
+    if not tankSpriteSheet then
+        tankSpriteSheet = love.graphics.newImage("assets/sprites/Tank_SpriteSheet.png")
+        -- A spritesheet tem 3 frames horizontalmente (lado a lado)
+        local frameWidth = tankSpriteSheet:getWidth() / 3
+        local frameHeight = tankSpriteSheet:getHeight()
+        
+        -- Cria os 3 quads para cada frame
+        tankQuads[1] = love.graphics.newQuad(0, 0, frameWidth, frameHeight, tankSpriteSheet)
+        tankQuads[2] = love.graphics.newQuad(frameWidth, 0, frameWidth, frameHeight, tankSpriteSheet)
+        tankQuads[3] = love.graphics.newQuad(frameWidth * 2, 0, frameWidth, frameHeight, tankSpriteSheet)
+    end
+    
     -- Carrega o som do laser (reproduz enquanto a tecla estiver pressionada)
     if not Player.shootSound then
         if love and love.audio then
@@ -48,10 +69,33 @@ function Player.update(dt)
     -- movimentação seja independente da taxa de quadros (FPS) do computador.
     if love.keyboard.isDown("a") then
         Player.x = Player.x - Player.speed * dt
+        -- Animação do tank: avança o frame (1 → 2 → 3 → 1)
+        if Player.form == "tank" then
+            tankAnimationTimer = tankAnimationTimer + dt
+            if tankAnimationTimer >= tankAnimationSpeed then
+                tankCurrentFrame = tankCurrentFrame + 1
+                if tankCurrentFrame > 3 then
+                    tankCurrentFrame = 1
+                end
+                tankAnimationTimer = 0
+            end
+        end
     end
     if love.keyboard.isDown("d") then
         Player.x = Player.x + Player.speed * dt
+        -- Animação do tank: volta o frame (3 → 2 → 1 → 3)
+        if Player.form == "tank" then
+            tankAnimationTimer = tankAnimationTimer + dt
+            if tankAnimationTimer >= tankAnimationSpeed then
+                tankCurrentFrame = tankCurrentFrame - 1
+                if tankCurrentFrame < 1 then
+                    tankCurrentFrame = 3
+                end
+                tankAnimationTimer = 0
+            end
+        end
     end
+    
     -- Movimentação Vertical (Fase 2: Nave)
     if Player.form == "nave" then
         if love.keyboard.isDown("w") then Player.y = Player.y - Player.speed * dt end
@@ -124,10 +168,23 @@ function Player.update(dt)
 end
 
 function Player.draw()
-    -- Renderização temporária (um retângulo) para debug visual
-    -- Branco: love.graphics.setColor(1, 1, 1) é o padrão no LÖVE 11+
     love.graphics.setColor(1, 1, 1)
-    love.graphics.rectangle("fill", Player.x, Player.y, Player.width, Player.height)
+    
+    -- Se a forma for tank, desenha a sprite animada
+    if Player.form == "tank" and tankSpriteSheet then
+        love.graphics.draw(
+            tankSpriteSheet,
+            tankQuads[tankCurrentFrame],
+            Player.x,
+            Player.y,
+            0, -- rotação
+            1, 1
+        )
+    else
+        -- Renderização temporária (um retângulo) para debug visual
+        -- Branco: love.graphics.setColor(1, 1, 1) é o padrão no LÖVE 11+
+        love.graphics.rectangle("fill", Player.x, Player.y, Player.width, Player.height)
+    end
 end
 
 return Player
