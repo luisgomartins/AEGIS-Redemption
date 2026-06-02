@@ -53,11 +53,11 @@ function Victory.draw()
     love.graphics.setColor(1, 1, 1)
     -- Quebras de linha (\n) para manter o texto legível
     local textoFinal = "O Silencio foi quebrado.\nO nucleo dos Ecos entrou em colapso.\n\nKael Nova sobrevive.\nA Unidade Aegis encontrou a sua redencao."
-    love.graphics.printf(textoFinal, 10, 70, 300, "center")
+    love.graphics.printf(textoFinal, 0, 70, 640, "center")
     -- Texto intermitente (piscar) para dar um toque Arcade
     if math.floor(love.timer.getTime() * 2) % 2 == 0 then
         love.graphics.setColor(0.8, 0.8, 0.8)
-        love.graphics.printf("[ENTER] Retornar a Base", 0, 150, 640, "center")
+        love.graphics.printf("[ENTER] Retornar a Base", 0, 180, 640, "center")
     end
 end
 

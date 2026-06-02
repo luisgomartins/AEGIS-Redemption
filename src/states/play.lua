@@ -17,9 +17,13 @@ local ambientDropCooldown = 3.5 -- A cada 3.5 segundos surge um item do céu
 
 -- Função para detecção de colisão circular baseada em raio
 -- Calcula o raio a partir da width/height (usa a metade da width como raio)
-local function CheckCollision(x1, y1, w1, h1, x2, y2, w2, h2)
-    local r1 = w1 / 2
-    local r2 = w2 / 2
+local function CheckCollision(x1, y1, w1, h1, x2, y2, w2, h2, scale1, scale2)
+    -- Se a escala não for fornecida na chamada, usa 1 (100% do tamanho)
+    scale1 = scale1 or 1
+    scale2 = scale2 or 1
+    
+    local r1 = (w1 / 2) * scale1
+    local r2 = (w2 / 2) * scale2
     
     -- Centro das entidades
     local centerX1 = x1 + w1 / 2
@@ -230,7 +234,7 @@ function Play.update(dt)
     for i = #eBullets, 1, -1 do
         local eb = eBullets[i]
         
-        if CheckCollision(eb.x, eb.y, eb.width, eb.height, Player.x, Player.y, Player.width, Player.height) then
+        if CheckCollision(eb.x, eb.y, eb.width, eb.height, Player.x, Player.y, Player.width, Player.height, 1, 0.5) then
             Player.hp = Player.hp - eb.damage
             table.remove(eBullets, i)
             if Player.hp <= 0 then

@@ -7,6 +7,10 @@ local activeCoins = {}
 -- Referência à altura da tela para o "Garbage Collection" (limpeza)
 local VIRTUAL_HEIGHT = 360
 
+-- NOVO: Variáveis para armazenar as sprites na memória cache
+local spriteCoin = nil
+local spriteHeal = nil
+
 -- Modificado: Agora aceita o tipo do drop ("coin" ou "heal")
 function Coin.spawn(x, y, dropType)
     local t = dropType or "coin"
@@ -14,8 +18,8 @@ function Coin.spawn(x, y, dropType)
     local newDrop = {
         x = x,
         y = y,
-        width = 6 * 2,
-        height = 6* 2,
+        width = 6 * 2,  -- Hitbox de 12px
+        height = 6 * 2, -- Hitbox de 12px
         speed = 60, -- Um pouco mais lento na fase 2 para dar tempo de desviar e coletar
         type = t,
         value = (t == "coin") and 10 or 0, -- Moeda vale 10, Cura manipula HP diretamente
@@ -40,17 +44,34 @@ function Coin.update(dt)
 end
 
 function Coin.draw()
-    for _, c in ipairs(activeCoins) do
-        if c.type == "coin" then
-            love.graphics.setColor(1, 0.8, 0) -- Amarelo Ouro para moedas
-            love.graphics.rectangle("fill", c.x, c.y, c.width, c.height)
-        elseif c.type == "heal" then
-            love.graphics.setColor(0.2, 1, 0.2) -- Verde brilhante para Kit de Reparo (GDD)
-            love.graphics.rectangle("fill", c.x, c.y, c.width, c.height)
-        end
+    -- 1. Lazy Loading das Sprites
+    -- Lembre-se: sempre utilizamos barras normais "/" para caminhos de arquivo!
+    if not spriteCoin then
+        spriteCoin = love.graphics.newImage("assets/sprites/Coin.png")
     end
-    -- Reset padrão da cor do framework
+    if not spriteHeal then
+        spriteHeal = love.graphics.newImage("assets/sprites/Heal.png")
+    end
+
+    -- 2. Reseta a cor para branco puro (1, 1, 1) ANTES de desenhar as imagens.
+    -- Se não fizermos isso, o LÖVE pode "tingir" a sprite com a cor do último desenho feito na tela.
     love.graphics.setColor(1, 1, 1)
+
+    for _, c in ipairs(activeCoins) do
+        -- 3. Define qual imagem usar baseada no tipo do drop
+        local img = (c.type == "coin") and spriteCoin or spriteHeal
+        
+        -- 4. Coleta as dimensões originais da imagem escolhida
+        local imgW = img:getWidth()
+        local imgH = img:getHeight()
+        
+        -- 5. Escalonamento Dinâmico (Matemática: Tamanho Desejado / Tamanho Original)
+        local scaleX = c.width / imgW
+        local scaleY = c.height / imgH
+
+        -- 6. Desenha a sprite na tela com a escala correta
+        love.graphics.draw(img, c.x, c.y, 0, scaleX, scaleY)
+    end
 end
 
 function Coin.getAll()

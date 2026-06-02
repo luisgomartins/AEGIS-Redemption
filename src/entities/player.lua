@@ -15,7 +15,7 @@ local tankSpriteSheet = nil
 local tankQuads = {} -- Array com os 3 quads da spritesheet
 local tankCurrentFrame = 1 -- Frame atual (1, 2, ou 3)
 local tankAnimationTimer = 0
-local tankAnimationSpeed = 0.1 -- Tempo entre frames (em segundos)
+local tankAnimationSpeed = 0.05 -- Tempo entre frames (em segundos)
 -- Variáveis para animação da sprite da nave
 local navSpriteSheet = nil
 local navQuads = {}
@@ -28,7 +28,7 @@ function Player.load()
     Player.width = 24 * 2
     Player.height = 16 * 2
     Player.x = (VIRTUAL_WIDTH / 2) - (Player.width / 2)
-    Player.y = VIRTUAL_HEIGHT - Player.height - 85 
+    Player.y = VIRTUAL_HEIGHT - Player.height - 100 
     Player.speed = 120 * 2 -- Pixels por segundo
     Player.maxHp = 100 -- Valor máximo de HP para referência em cura e UI
     Player.hp = Player.maxHp -- Inicializa o HP do jogador com o valor máximo
@@ -43,13 +43,18 @@ function Player.load()
     if not tankSpriteSheet then
         tankSpriteSheet = love.graphics.newImage("assets/sprites/Tank_SpriteSheet.png")
         -- A spritesheet tem 3 frames horizontalmente (lado a lado)
-        local frameWidth = tankSpriteSheet:getWidth() / 3
+        local frameWidth = tankSpriteSheet:getWidth() / 8
         local frameHeight = tankSpriteSheet:getHeight()
         
         -- Cria os 3 quads para cada frame
         tankQuads[1] = love.graphics.newQuad(0, 0, frameWidth, frameHeight, tankSpriteSheet)
         tankQuads[2] = love.graphics.newQuad(frameWidth, 0, frameWidth, frameHeight, tankSpriteSheet)
         tankQuads[3] = love.graphics.newQuad(frameWidth * 2, 0, frameWidth, frameHeight, tankSpriteSheet)
+        tankQuads[4] = love.graphics.newQuad(frameWidth * 3, 0, frameWidth, frameHeight, tankSpriteSheet)
+        tankQuads[5] = love.graphics.newQuad(frameWidth * 4, 0, frameWidth, frameHeight, tankSpriteSheet)
+        tankQuads[6] = love.graphics.newQuad(frameWidth * 5, 0, frameWidth, frameHeight, tankSpriteSheet)
+        tankQuads[7] = love.graphics.newQuad(frameWidth * 6, 0, frameWidth, frameHeight, tankSpriteSheet)
+        tankQuads[8] = love.graphics.newQuad(frameWidth * 7, 0, frameWidth, frameHeight, tankSpriteSheet)
     end
 
     -- Carrega a spritesheet da nave (2 frames lado a lado)
@@ -89,7 +94,8 @@ function Player.update(dt)
             tankAnimationTimer = tankAnimationTimer + dt
             if tankAnimationTimer >= tankAnimationSpeed then
                 tankCurrentFrame = tankCurrentFrame + 1
-                if tankCurrentFrame > 3 then
+                
+                if tankCurrentFrame > 8 then
                     tankCurrentFrame = 1
                 end
                 tankAnimationTimer = 0
@@ -104,7 +110,7 @@ function Player.update(dt)
             if tankAnimationTimer >= tankAnimationSpeed then
                 tankCurrentFrame = tankCurrentFrame - 1
                 if tankCurrentFrame < 1 then
-                    tankCurrentFrame = 3
+                    tankCurrentFrame = 8
                 end
                 tankAnimationTimer = 0
             end
@@ -141,29 +147,44 @@ function Player.update(dt)
     end
 
     -- Verifica se a tecla Espaço está pressionada e se o cooldown zerou
+    -- Verifica se a tecla Espaço está pressionada e se o cooldown zerou
     if love.keyboard.isDown("space") and Player.shootTimer <= 0 then
-        -- Calcula o centro do tanque para o tiro sair alinhado
-        local bulletX = Player.x + (Player.width / 2) - 2 -- 2 é a metade da largura do tiro
-        local bulletY = Player.y
-        -- Instancia o tiro e reseta o cronômetro
-        Bullet.spawn(bulletX, bulletY)
-        Player.shootTimer = Player.shootCooldown
-
-    end
-    -- TIRO ESPECIAL (Tecla F)
-    -- Condição: A tecla F deve ser pressionada E a energia tem que estar no máximo
-    if love.keyboard.isDown("f") and Player.energy >= Player.maxEnergy then -- 
-        local specialX = Player.x + (Player.width / 2) - 8 -- Centraliza o tiro de 16px
+        -- Define o ajuste visual dependendo de qual máquina está sendo usada
+        local offsetVisualX = 0
+        if Player.form == "tank" then
+            offsetVisualX = 11  -- Valor que centralizou o Tanque
+        elseif Player.form == "nave" then
+            offsetVisualX = -1 -- Valor negativo puxa o tiro da Nave de volta para a esquerda
+        end
         
-        -- Dispara o Especial
+        local bulletX = Player.x + (Player.width / 2) - 8 + offsetVisualX
+        local bulletY = Player.y
+        
+        Bullet.spawn(bulletX, bulletY, Player.form)
+        Player.shootTimer = Player.shootCooldown
+    end
+
+    -- =========================================================
+    -- TIRO ESPECIAL (Tecla F)
+    -- =========================================================
+    if love.keyboard.isDown("f") and Player.energy >= Player.maxEnergy then 
+        -- Aplica a mesma lógica de separação para o tiro Especial
+        local offsetVisualX = 0
+        if Player.form == "tank" then
+            offsetVisualX = 6
+        elseif Player.form == "nave" then
+            offsetVisualX = -4
+        end
+        
+        local specialX = Player.x + (Player.width / 2) - 8 + offsetVisualX
+        
         Bullet.spawnSpecial(specialX, Player.y)
-        -- Toca o som do especial
+        
         if Player.specialSound then
             Player.specialSound:stop()
             Player.specialSound:play()
         end
 
-        -- Reseta a energia (Esgotamento de Foco)
         Player.energy = 0
         print("PODER ESPECIAL LANÇADO!")
     end
@@ -201,7 +222,7 @@ function Player.draw()
             Player.x,
             Player.y,
             0, -- rotação
-            1.1, 1.1
+            1, 1
         )
     elseif Player.form == "nave" and navSpriteSheet then
         -- Calcula escala pra encaixar na hitbox atual do jogador

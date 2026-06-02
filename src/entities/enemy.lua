@@ -93,7 +93,7 @@ function Enemy.load(fase)
         Enemy.height = 64 * 2
         Enemy.x = (VIRTUAL_WIDTH / 2) - (Enemy.width / 2)
         Enemy.y = 15 
-        Enemy.maxHp = 4500 -- Máximo de resistência (GDD)
+        Enemy.maxHp = 2800 -- Máximo de resistência
         Enemy.hp = Enemy.maxHp 
         
         -- Variáveis da Curva de Lissajous (Movimentação)
@@ -361,13 +361,13 @@ function Enemy.update(dt)
             
             if Enemy.patternIndex == 1 then
                 -- PADRÃO 1: Vórtice de Vácuo (Espiral Dupla de alto dano)
-                Enemy.shootCooldown = 0.04 -- Muito rápido
+                Enemy.shootCooldown = 0.1
                 Enemy.spiralAngle = Enemy.spiralAngle + 0.3
                 
                 -- Espiral Horária
-                EnemyBullet.spawn(cx, cy, math.cos(Enemy.spiralAngle) * 1.5, math.sin(Enemy.spiralAngle) * 1.5, 40, 100)
+                EnemyBullet.spawn(cx, cy, math.cos(Enemy.spiralAngle) * 1.5, math.sin(Enemy.spiralAngle) * 1.5, 20, 120)
                 -- Espiral Anti-horária
-                EnemyBullet.spawn(cx, cy, math.cos(-Enemy.spiralAngle) * 1.5, math.sin(-Enemy.spiralAngle) * 1.5, 40, 100)
+                EnemyBullet.spawn(cx, cy, math.cos(-Enemy.spiralAngle) * 1.5, math.sin(-Enemy.spiralAngle) * 1.5, 20, 120)
             elseif Enemy.patternIndex == 2 then
                 
                 -- PADRÃO 2: Matriz de Aniquilação (Explosão Radial Densa)
@@ -378,14 +378,14 @@ function Enemy.update(dt)
                 end
             elseif Enemy.patternIndex == 3 then
                 -- PADRÃO 3: Fragmentação (3 tiros para baixo que se dividem enquanto viajam)
-                Enemy.shootCooldown = 0.8
+                Enemy.shootCooldown = 0.4
                 
-                -- 3 tiros principais apontando para baixo (60°, 90°, 120°)
-                local angles = {math.pi / 2 - math.pi / 6, math.pi / 2, math.pi / 2 + math.pi / 6}
+                -- 3 tiros principais apontando para baixo (30°, 90°, 150°)
+                local angles = {math.pi / 2 - math.pi / 3, math.pi / 2, math.pi / 2 + math.pi / 3}
                 for _, angle in ipairs(angles) do
                     local dx = math.cos(angle)
                     local dy = math.sin(angle)
-                    EnemyBullet.spawn(cx, cy, dx, dy, 35, 130, 0.8, 0)
+                    EnemyBullet.spawn(cx, cy, dx, dy, 20, 140, 0.8, 0)
                 end
             end
             

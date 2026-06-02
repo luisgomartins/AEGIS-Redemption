@@ -4,6 +4,7 @@ local EnemyBullet = {}
 local activeBullets = {}
 local VIRTUAL_HEIGHT = 360
 local VIRTUAL_WIDTH = 640 -- Adicionado para checagem lateral
+local bulletSprite = nil
 
 -- Agora recebemos dx e dy como parâmetros opcionais
 function EnemyBullet.spawn(x, y, dx, dy, customDamage, customSpeed, splitTimer, splitCount)
@@ -56,9 +57,38 @@ function EnemyBullet.update(dt)
 end
 
 function EnemyBullet.draw()
-    love.graphics.setColor(1, 0.6, 0.1)
+    if not bulletSprite then
+        bulletSprite = love.graphics.newImage("assets/sprites/TiroRosa.png")
+    end
+
+    love.graphics.setColor(1, 1, 1)
+
+    -- Pega as dimensões originais da imagem para a nossa matemática
+    local imgW = bulletSprite:getWidth()
+    local imgH = bulletSprite:getHeight()
+
     for _, b in ipairs(activeBullets) do
-        love.graphics.rectangle("fill", b.x, b.y, b.width, b.height)
+        local scaleX = b.width / imgW
+        local scaleY = b.height / imgH
+
+        local originX = imgW / 2
+        local originY = imgH / 2
+
+        local drawX = b.x + (b.width / 2)
+        local drawY = b.y + (b.height / 2)
+
+        local angle = math.atan2(b.dy, b.dx)
+
+        love.graphics.draw(
+            bulletSprite, 
+            drawX,        -- Posição X (centralizada)
+            drawY,        -- Posição Y (centralizada)
+            angle,        -- Rotação de acordo com o trajeto
+            scaleX,       -- Escala X
+            scaleY,       -- Escala Y
+            originX,      -- Centro da imagem X
+            originY       -- Centro da imagem Y
+        )
     end
 end
 
