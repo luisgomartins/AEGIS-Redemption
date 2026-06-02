@@ -22,7 +22,7 @@ function Player.load()
     Player.width = 24 * 2
     Player.height = 16 * 2
     Player.x = (VIRTUAL_WIDTH / 2) - (Player.width / 2)
-    Player.y = VIRTUAL_HEIGHT - Player.height - 10 
+    Player.y = VIRTUAL_HEIGHT - Player.height - 85 
     Player.speed = 120 * 2 -- Pixels por segundo
     Player.maxHp = 10000 -- Valor máximo de HP para referência em cura e UI
     Player.hp = Player.maxHp -- Inicializa o HP do jogador com o valor máximo
@@ -178,7 +178,7 @@ function Player.draw()
             Player.x,
             Player.y,
             0, -- rotação
-            1, 1
+            1.1, 1.1
         )
     else
         -- Renderização temporária (um retângulo) para debug visual

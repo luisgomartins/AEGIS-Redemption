@@ -64,6 +64,15 @@ function Play.load()
         if Play.music3 and Play.music3:isPlaying() then Play.music3:stop() end
         Play.music = Play.music1
         if Play.music and not Play.music:isPlaying() then Play.music:play() end
+        -- Carrega o background da fase 1
+        if not Play.background1 then
+            Play.background1 = love.graphics.newImage("assets/backgrounds/BackGround1.png")
+            -- calcula escala para ajustar à resolução 640x360
+            local bw = Play.background1:getWidth()
+            local bh = Play.background1:getHeight()
+            Play.bg1ScaleX = 640 / bw
+            Play.bg1ScaleY = 360 / bh
+        end
     elseif Play.faseAtual == 2 then
         Player.load()
         -- fase 2: nave
@@ -241,6 +250,12 @@ function Play.update(dt)
 end
 function Play.draw()
     love.graphics.clear(0.15, 0.15, 0.18)
+
+    -- Desenha o background da fase 1 antes de tudo
+    if Play.faseAtual == 1 and Play.background1 then
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(Play.background1, 0, 0, 0, Play.bg1ScaleX or 1, Play.bg1ScaleY or 1)
+    end
 
     -- Borda do mapa para reforçar a área de jogo
     love.graphics.setColor(0.3, 0.3, 0.45)

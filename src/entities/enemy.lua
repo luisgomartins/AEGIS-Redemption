@@ -24,6 +24,17 @@ function Enemy.load(fase)
         Enemy.shootTimer = 0
         Enemy.shootCooldown = 0.5 
         Enemy.shotCount = 0 
+        -- Carrega a sprite do boss (Eco) para a fase 1, independente do estado enraged
+        if not Enemy.sprite then
+            if love and love.graphics then
+                Enemy.sprite = love.graphics.newImage("assets/sprites/Eco1.png")
+                -- calcula escala para encaixar na hitbox do boss
+                local sw = Enemy.sprite:getWidth()
+                local sh = Enemy.sprite:getHeight()
+                Enemy.spriteScaleX = Enemy.width / sw
+                Enemy.spriteScaleY = Enemy.height / sh
+            end
+        end
     
     elseif fase == 2 then
         -- Configurações do Eco 2: Nave Mãe / Bullet Hell
@@ -333,12 +344,19 @@ end
 
 function Enemy.draw()
     if Enemy.faseAtual == 1 then
-        if Enemy.isEnraged then
-            love.graphics.setColor(1, 0.4, 0) 
+        -- Desenha a sprite definida para o boss na fase 1, independente de enraged
+        if Enemy.sprite then
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.draw(Enemy.sprite, Enemy.x, Enemy.y, 0, Enemy.spriteScaleX or 1, Enemy.spriteScaleY or 1)
         else
-            love.graphics.setColor(1, 0.2, 0.2) 
+            -- Fallback: retângulo colorido caso a sprite não esteja disponível
+            if Enemy.isEnraged then
+                love.graphics.setColor(1, 0.4, 0)
+            else
+                love.graphics.setColor(1, 0.2, 0.2)
+            end
+            love.graphics.rectangle("fill", Enemy.x, Enemy.y, Enemy.width, Enemy.height)
         end
-        love.graphics.rectangle("fill", Enemy.x, Enemy.y, Enemy.width, Enemy.height)
     elseif Enemy.faseAtual == 2 then
         -- Dicas Visuais (Telegrafar os ataques)
         if Enemy.phase2State == "diving" then
