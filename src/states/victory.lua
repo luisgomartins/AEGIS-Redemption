@@ -7,6 +7,20 @@ local inputCooldown = 0
 function Victory.load()
     -- Dá 1 segundo de tempo para o jogador absorver a vitória e largar os botões
     inputCooldown = 1.0 
+
+    -- Carrega e toca a música de vitória em loop
+    if not Victory.victoryMusic then
+        if love and love.audio then
+            Victory.victoryMusic = love.audio.newSource("assets/music/Planetoids.mp3", "stream")
+            Victory.victoryMusic:setLooping(true)
+            Victory.victoryMusic:setVolume(0.2)
+        end
+    end
+
+    if Victory.victoryMusic then
+        Victory.victoryMusic:stop()
+        Victory.victoryMusic:play()
+    end
 end
 
 function Victory.update(dt)
@@ -23,6 +37,9 @@ function Victory.keypressed(key)
     end
     -- Se o tempo já passou, o input é processado de forma segura
     if key == "return" then
+        if Victory.victoryMusic then
+            Victory.victoryMusic:stop()
+        end
         Play.faseAtual = 1 -- Reiniciamos o progresso para uma futura jogada
         MudarEstado("menu")
     end

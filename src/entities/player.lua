@@ -16,6 +16,12 @@ local tankQuads = {} -- Array com os 3 quads da spritesheet
 local tankCurrentFrame = 1 -- Frame atual (1, 2, ou 3)
 local tankAnimationTimer = 0
 local tankAnimationSpeed = 0.1 -- Tempo entre frames (em segundos)
+-- Variáveis para animação da sprite da nave
+local navSpriteSheet = nil
+local navQuads = {}
+local navCurrentFrame = 1 -- 1 ou 2
+local navAnimationTimer = 0
+local navAnimationSpeed = 0.08 -- loop de foguinho
 
 function Player.load()
 
@@ -24,7 +30,7 @@ function Player.load()
     Player.x = (VIRTUAL_WIDTH / 2) - (Player.width / 2)
     Player.y = VIRTUAL_HEIGHT - Player.height - 85 
     Player.speed = 120 * 2 -- Pixels por segundo
-    Player.maxHp = 10000 -- Valor máximo de HP para referência em cura e UI
+    Player.maxHp = 100 -- Valor máximo de HP para referência em cura e UI
     Player.hp = Player.maxHp -- Inicializa o HP do jogador com o valor máximo
     Player.coins = 0   -- Variável para a loja pós-chefe
     Player.form = "tank" -- Fase 1
@@ -44,6 +50,15 @@ function Player.load()
         tankQuads[1] = love.graphics.newQuad(0, 0, frameWidth, frameHeight, tankSpriteSheet)
         tankQuads[2] = love.graphics.newQuad(frameWidth, 0, frameWidth, frameHeight, tankSpriteSheet)
         tankQuads[3] = love.graphics.newQuad(frameWidth * 2, 0, frameWidth, frameHeight, tankSpriteSheet)
+    end
+
+    -- Carrega a spritesheet da nave (2 frames lado a lado)
+    if not navSpriteSheet then
+        navSpriteSheet = love.graphics.newImage("assets/sprites/Nave_SpriteSheet.png")
+        local nFrameW = navSpriteSheet:getWidth() / 2
+        local nFrameH = navSpriteSheet:getHeight()
+        navQuads[1] = love.graphics.newQuad(0, 0, nFrameW, nFrameH, navSpriteSheet)
+        navQuads[2] = love.graphics.newQuad(nFrameW, 0, nFrameW, nFrameH, navSpriteSheet)
     end
     
     -- Carrega o som do laser (reproduz enquanto a tecla estiver pressionada)
@@ -165,12 +180,20 @@ function Player.update(dt)
             end
         end
     end
+
+    -- Animação contínua da nave (foguinho) quando em forma 'nave'
+    if Player.form == "nave" and navSpriteSheet then
+        navAnimationTimer = navAnimationTimer + dt
+        if navAnimationTimer >= navAnimationSpeed then
+            navCurrentFrame = navCurrentFrame % 2 + 1 -- alterna 1 <-> 2
+            navAnimationTimer = 0
+        end
+    end
 end
 
 function Player.draw()
     love.graphics.setColor(1, 1, 1)
     
-    -- Se a forma for tank, desenha a sprite animada
     if Player.form == "tank" and tankSpriteSheet then
         love.graphics.draw(
             tankSpriteSheet,
@@ -180,9 +203,15 @@ function Player.draw()
             0, -- rotação
             1.1, 1.1
         )
+    elseif Player.form == "nave" and navSpriteSheet then
+        -- Calcula escala pra encaixar na hitbox atual do jogador
+        local sw = navSpriteSheet:getWidth() / 2
+        local sh = navSpriteSheet:getHeight()
+        local scaleX = Player.width / sw
+        local scaleY = Player.height / sh
+        love.graphics.draw(navSpriteSheet, navQuads[navCurrentFrame], Player.x, Player.y, 0, scaleX, scaleY)
     else
         -- Renderização temporária (um retângulo) para debug visual
-        -- Branco: love.graphics.setColor(1, 1, 1) é o padrão no LÖVE 11+
         love.graphics.rectangle("fill", Player.x, Player.y, Player.width, Player.height)
     end
 end

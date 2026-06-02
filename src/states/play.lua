@@ -59,6 +59,9 @@ function Play.load()
     -- Define comportamento por fase e gerencia a música ativa em Play.music
     if Play.faseAtual == 1 then
         Player.load()
+        -- Limpa projéteis existentes ao (re)iniciar a fase/respawn do jogador
+        Bullet.clear()
+        EnemyBullet.clear()
         -- toca música 1
         if Play.music2 and Play.music2:isPlaying() then Play.music2:stop() end
         if Play.music3 and Play.music3:isPlaying() then Play.music3:stop() end
@@ -75,6 +78,9 @@ function Play.load()
         end
     elseif Play.faseAtual == 2 then
         Player.load()
+        -- Limpa projéteis existentes ao (re)iniciar a fase/respawn do jogador
+        Bullet.clear()
+        EnemyBullet.clear()
         -- fase 2: nave
         if Play.music1 and Play.music1:isPlaying() then Play.music1:stop() end
         if Play.music3 and Play.music3:isPlaying() then Play.music3:stop() end
@@ -86,13 +92,33 @@ function Play.load()
         Player.height = 32
         Player.x = (640 / 2) - (Player.width / 2)
         Player.y = 360 - Player.height - 10
+        -- Carrega o background da fase 2
+        if not Play.background2 then
+            Play.background2 = love.graphics.newImage("assets/backgrounds/BackGround2.png")
+            local bw = Play.background2:getWidth()
+            local bh = Play.background2:getHeight()
+            Play.bg2ScaleX = 640 / bw
+            Play.bg2ScaleY = 360 / bh
+        end
     elseif Play.faseAtual == 3 then
         Player.load()
+        -- Limpa projéteis existentes ao (re)iniciar a fase/respawn do jogador
+        Bullet.clear()
+        EnemyBullet.clear()
         -- fase 3: toca música 3
         if Play.music1 and Play.music1:isPlaying() then Play.music1:stop() end
         if Play.music2 and Play.music2:isPlaying() then Play.music2:stop() end
         Play.music = Play.music3
         if Play.music and not Play.music:isPlaying() then Play.music:play() end
+
+        -- Carrega o background da fase 3
+        if not Play.background3 then
+            Play.background3 = love.graphics.newImage("assets/backgrounds/BackGround3.png")
+            local bw = Play.background3:getWidth()
+            local bh = Play.background3:getHeight()
+            Play.bg3ScaleX = 640 / bw
+            Play.bg3ScaleY = 360 / bh
+        end
 
         Player.form = "nave"
         Player.width = 32
@@ -108,6 +134,9 @@ function Play.load()
 
         if Play.faseAtual >= 2 then
             Player.load()
+            -- Limpa projéteis ao recarregar a fase (caso seja respawn)
+            Bullet.clear()
+            EnemyBullet.clear()
             Player.form = "nave"
             Player.width = 32
             Player.height = 32
@@ -237,13 +266,16 @@ function Play.update(dt)
     -- ==========================================================
     
     if love.keyboard.isDown("1") then
-        Play.faseAtual = 1
-        Play.load() -- Recarrega as configurações da Fase 1 instantaneamente
-    elseif love.keyboard.isDown("2") then
-        Play.faseAtual = 2
-        Play.load() -- Transiciona e recarrega os dados para a Fase 2
+            Play.faseAtual = 1
+            Play.load() -- R
+        elseif love.keyboard.isDown("2") then
+            Play.faseAtual = 2
+            Play.load() -- 
+        elseif love.keyboard.isDown("3") then
+            Play.faseAtual = 3
+            Play.load()
     end
-    
+
     if love.keyboard.isDown("backspace") then
         MudarEstado("menu")
     end
@@ -251,10 +283,16 @@ end
 function Play.draw()
     love.graphics.clear(0.15, 0.15, 0.18)
 
-    -- Desenha o background da fase 1 antes de tudo
+    -- Desenha o background da fase 1 ou fase 2 antes de tudo
     if Play.faseAtual == 1 and Play.background1 then
         love.graphics.setColor(1, 1, 1)
         love.graphics.draw(Play.background1, 0, 0, 0, Play.bg1ScaleX or 1, Play.bg1ScaleY or 1)
+    elseif Play.faseAtual == 2 and Play.background2 then
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(Play.background2, 0, 0, 0, Play.bg2ScaleX or 1, Play.bg2ScaleY or 1)
+    elseif Play.faseAtual == 3 and Play.background3 then
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(Play.background3, 0, 0, 0, Play.bg3ScaleX or 1, Play.bg3ScaleY or 1)
     end
 
     -- Borda do mapa para reforçar a área de jogo

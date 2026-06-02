@@ -36,10 +36,10 @@ function Shop.load()
     items = {
         {
             name = "Blindagem (Max HP)",
-            desc = "Aumenta a integridade estrutural da maquina em 20 pontos e a repara.",
+            desc = "Aumenta a integridade estrutural da maquina em 40 pontos e a repara.",
             cost = 45,
             action = function(self)
-                Player.maxHp = Player.maxHp + 20
+                Player.maxHp = Player.maxHp + 40
                 Player.hp = Player.maxHp -- Cura total como bonus
 
                 local Costpercent = self.cost * 0.10
@@ -49,7 +49,7 @@ function Shop.load()
         {
             name = "Reator de Foco",
             desc = "Diminui a quantidade requerida de energia para o Poder Especial.",
-            cost = 75,
+            cost = 70,
             action = function(self)
                 Player.maxEnergy = Player.maxEnergy - 6
 

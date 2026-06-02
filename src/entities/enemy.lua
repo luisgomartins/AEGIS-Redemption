@@ -14,7 +14,7 @@ function Enemy.load(fase)
         Enemy.width = 64 * 2 
         Enemy.height = 32 * 2
         Enemy.x = (VIRTUAL_WIDTH / 2) - (Enemy.width / 2)
-        Enemy.y = 10 
+        Enemy.y = 0 
         Enemy.speed = 100 
         Enemy.maxHp = 1000 
         Enemy.hp = Enemy.maxHp 
@@ -61,6 +61,24 @@ function Enemy.load(fase)
         Enemy.currentPattern = 1  
         Enemy.spiralAngle = 0     
 
+        -- Carrega (ou recarrega) sprite do boss da fase 2 (spritesheet de 3 frames lado a lado)
+        if love and love.graphics then
+            Enemy.sprite2 = love.graphics.newImage("assets/sprites/Eco2.png")
+            local fw = Enemy.sprite2:getWidth() / 3
+            local fh = Enemy.sprite2:getHeight()
+            Enemy.sprite2Quads = {}
+            Enemy.sprite2Quads[1] = love.graphics.newQuad(0, 0, fw, fh, Enemy.sprite2)
+            Enemy.sprite2Quads[2] = love.graphics.newQuad(fw, 0, fw, fh, Enemy.sprite2)
+            Enemy.sprite2Quads[3] = love.graphics.newQuad(fw * 2, 0, fw, fh, Enemy.sprite2)
+            Enemy.sprite2Frame = 1
+            Enemy.sprite2Timer = 0
+            Enemy.sprite2Speed = 0.1
+            Enemy.sprite2FrameW = fw
+            Enemy.sprite2FrameH = fh
+            Enemy.sprite2ScaleX = Enemy.width / fw
+            Enemy.sprite2ScaleY = Enemy.height / fh
+        end
+
         -- Varredura Horizontal (O rasante no limite inferior)
         Enemy.horizontalCooldown = 14 -- A cada 14 segundos ele faz essa mecânica
         Enemy.targetX = 0
@@ -88,6 +106,23 @@ function Enemy.load(fase)
         Enemy.shootTimer = 0
         
         Enemy.enraged = false
+
+        -- Carrega sprite do boss da fase 3 (spritesheet de 2 frames lado a lado)
+        if not Enemy.sprite3 then
+            if love and love.graphics then
+                Enemy.sprite3 = love.graphics.newImage("assets/sprites/Eco3.png")
+                local fw3 = Enemy.sprite3:getWidth() / 2
+                local fh3 = Enemy.sprite3:getHeight()
+                Enemy.sprite3Quads = {}
+                Enemy.sprite3Quads[1] = love.graphics.newQuad(0, 0, fw3, fh3, Enemy.sprite3)
+                Enemy.sprite3Quads[2] = love.graphics.newQuad(fw3, 0, fw3, fh3, Enemy.sprite3)
+                Enemy.sprite3Frame = 1
+                Enemy.sprite3Timer = 0
+                Enemy.sprite3Speed = 0.3
+                Enemy.sprite3ScaleX = Enemy.width / fw3
+                Enemy.sprite3ScaleY = Enemy.height / fh3
+            end
+        end
     end   
 end
 
@@ -261,7 +296,24 @@ function Enemy.update(dt)
             end
         end
 
+        -- Animação do sprite2 (fase 2) — avança frames continuamente
+        if Enemy.sprite2 then
+            Enemy.sprite2Timer = (Enemy.sprite2Timer or 0) + dt
+            if Enemy.sprite2Timer >= (Enemy.sprite2Speed or 0.12) then
+                Enemy.sprite2Frame = (Enemy.sprite2Frame or 1) % 3 + 1
+                Enemy.sprite2Timer = 0
+            end
+        end
+
     elseif Enemy.faseAtual == 3 then
+        -- Animação do sprite3 (fase 3) — avança frames continuamente
+        if Enemy.sprite3 then
+            Enemy.sprite3Timer = (Enemy.sprite3Timer or 0) + dt
+            if Enemy.sprite3Timer >= (Enemy.sprite3Speed or 0.12) then
+                Enemy.sprite3Frame = (Enemy.sprite3Frame or 1) % 2 + 1
+                Enemy.sprite3Timer = 0
+            end
+        end
         -- ==========================================
         -- IA FASE 3: Curva de Lissajous e Bullet Hell Extremo
         -- ==========================================
@@ -371,7 +423,13 @@ function Enemy.draw()
         else
             love.graphics.setColor(0.8, 0.1, 0.8) -- Roxo normal
         end
-        love.graphics.rectangle("fill", Enemy.x, Enemy.y, Enemy.width, Enemy.height)
+        -- Se tivermos a sprite2 carregada, desenha-a escalada; caso contrário fallback pro retângulo
+        if Enemy.sprite2 then
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.draw(Enemy.sprite2, Enemy.sprite2Quads[Enemy.sprite2Frame], Enemy.x, Enemy.y, 0, Enemy.sprite2ScaleX or 1, Enemy.sprite2ScaleY or 1)
+        else
+            love.graphics.rectangle("fill", Enemy.x, Enemy.y, Enemy.width, Enemy.height)
+        end
     elseif Enemy.faseAtual == 3 then
         -- O Núcleo pulsa mudando de cor dependendo do padrão de tiro
         if Enemy.patternIndex == 1 then
@@ -379,7 +437,12 @@ function Enemy.draw()
         else
             love.graphics.setColor(1, 0.5, 0) -- Laranja Intenso (Matriz)
         end
-        love.graphics.rectangle("fill", Enemy.x, Enemy.y, Enemy.width, Enemy.height)
+        if Enemy.sprite3 then
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.draw(Enemy.sprite3, Enemy.sprite3Quads[Enemy.sprite3Frame], Enemy.x, Enemy.y, 0, Enemy.sprite3ScaleX or 1, Enemy.sprite3ScaleY or 1)
+        else
+            love.graphics.rectangle("fill", Enemy.x, Enemy.y, Enemy.width, Enemy.height)
+        end
     end
 end
 

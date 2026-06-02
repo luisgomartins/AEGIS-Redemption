@@ -7,6 +7,21 @@ local inputCooldown = 0
 function GameOver.load()
     -- Bloqueia o input por meio segundo para evitar que pule a tela sem querer
     inputCooldown = 0.5 
+    
+    -- Carrega e toca a música de game over (sem loop, apenas uma vez)
+    if not GameOver.gameOverMusic then
+        if love and love.audio then
+            GameOver.gameOverMusic = love.audio.newSource("assets/music/Game Over.mp3", "stream")
+            GameOver.gameOverMusic:setLooping(false)
+            GameOver.gameOverMusic:setVolume(0.3)
+        end
+    end
+    
+    -- Para qualquer música que estava tocando e toca a do game over
+    if GameOver.gameOverMusic then
+        GameOver.gameOverMusic:stop()
+        GameOver.gameOverMusic:play()
+    end
 end
 
 function GameOver.update(dt)
@@ -24,8 +39,14 @@ function GameOver.keypressed(key)
 
     -- Se o timer zerou, aceitamos o input normalmente:
     if key == "r" then
+        if GameOver.gameOverMusic then
+            GameOver.gameOverMusic:stop()
+        end
         MudarEstado("play") 
     elseif key == "return" or key == "backspace" then
+        if GameOver.gameOverMusic then
+            GameOver.gameOverMusic:stop()
+        end
         Play.faseAtual = 1
         MudarEstado("menu")
     end
