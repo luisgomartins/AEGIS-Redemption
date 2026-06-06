@@ -2,6 +2,10 @@
 local Victory = {}
 local Play = require "src.states.play"
 
+local bgImage = nil
+local bgScaleX = 1
+local bgScaleY = 1
+
 local inputCooldown = 0
 
 function Victory.load()
@@ -20,6 +24,13 @@ function Victory.load()
     if Victory.victoryMusic then
         Victory.victoryMusic:stop()
         Victory.victoryMusic:play()
+    end
+
+    -- Carrega o Background da Vitória e calcula a escala para 640x360
+    if not bgImage then
+        bgImage = love.graphics.newImage("assets/backgrounds/Victory.png")
+        bgScaleX = 640 / bgImage:getWidth()
+        bgScaleY = 360 / bgImage:getHeight()
     end
 end
 
@@ -46,18 +57,21 @@ function Victory.keypressed(key)
 end
 
 function Victory.draw()
-    love.graphics.clear(0.05, 0.08, 0.15) -- Fundo espacial profundo
-    love.graphics.setColor(0.2, 0.8, 1) -- Ciano brilhante (Cor da Aegis)
     love.graphics.printf("PROTOCOLO AEGIS CONCLUIDO", 0, 30, 640, "center")
+
+    -- Desenha o background da vitória
+    if bgImage then
+        love.graphics.draw(bgImage, 0, 0, 0, bgScaleX, bgScaleY)
+    end
 
     love.graphics.setColor(1, 1, 1)
     -- Quebras de linha (\n) para manter o texto legível
     local textoFinal = "O Silencio foi quebrado.\nO nucleo dos Ecos entrou em colapso.\n\nKael Nova sobrevive.\nA Unidade Aegis encontrou a sua redencao."
-    love.graphics.printf(textoFinal, 0, 70, 640, "center")
+    love.graphics.printf(textoFinal, 0, 180, 640, "center")
     -- Texto intermitente (piscar) para dar um toque Arcade
     if math.floor(love.timer.getTime() * 2) % 2 == 0 then
         love.graphics.setColor(0.8, 0.8, 0.8)
-        love.graphics.printf("[ENTER] Retornar a Base", 0, 180, 640, "center")
+        love.graphics.printf("[ENTER] Retornar a Base", 0, 260, 640, "center")
     end
 end
 
