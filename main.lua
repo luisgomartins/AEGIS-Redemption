@@ -34,6 +34,7 @@ function love.load()
     estados.shop = require "src.states.shop"
     estados.gameover = require "src.states.gameover"
     estados.victory = require "src.states.victory"
+    estados.intro = require "src.states.intro"
 
     if estados[EstadoAtual].load then
         estados[EstadoAtual].load()

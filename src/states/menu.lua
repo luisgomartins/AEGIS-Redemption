@@ -2,7 +2,7 @@
 
 local Menu = {}
 local Play = require "src.states.play"
-
+local Intro = require "src.states.intro"
 -- Configurações de Resolução Virtual
 local VIRTUAL_WIDTH = 640
 local VIRTUAL_HEIGHT = 360
@@ -50,7 +50,7 @@ end
 
 function Menu.keypressed(key)
     if key == "return" then
-        MudarEstado("play")
+        MudarEstado("intro")
     end
 end
 
@@ -76,7 +76,7 @@ function Menu.draw()
 
     -- 3. Texto interativo
     -- Movido para o Y = 280 (mais para baixo) para não cobrir o tanque do background
-    love.graphics.printf("Pressione ENTER para jogar", 0, 260, VIRTUAL_WIDTH, "center")
+    love.graphics.printf("Pressione [ENTER] para jogar", 0, 260, VIRTUAL_WIDTH, "center")
 end
 
 return Menu

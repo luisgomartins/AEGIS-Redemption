@@ -16,6 +16,7 @@ local bgScaleY = 1
 
 function Shop.load()
     selectedIndex = 1
+    inputCooldown = 0.5 -- Pequeno delay para evitar inputs acidentais ao entrar na loja
 
     -- 1. Carrega o Background da Loja e calcula a escala (Resolução Virtual: 640x360)
     if not bgImage then
@@ -45,7 +46,7 @@ function Shop.load()
         end
     end
     
-    -- Estrutura de dados dos Upgrades baseada no GDD
+    -- Estrutura de dados dos Upgrades
     items = {
         {
             name = "Blindagem (Max HP)",
