@@ -61,5 +61,5 @@ Projeto desenvolvido para fins acadêmicos.
 - Luis Gustavo Martins - Design Gráfico e Padrões de Tiro
 - Filipe Felix - Sonorização, GDD e solução de bugs de programação
 
-Agradecimentos especiais ao professor orientador da disciplina de Multimídia.
+Agradecimentos especiais ao professor José Tarcísio Franco, da disciplina de Multimídia.
  
